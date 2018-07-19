@@ -22,15 +22,14 @@
 triangle = [nil, nil, nil]
 triangle.map! do |el|
   puts "Введите сторону треугольника."
-  gets.chomp.to_i
+  gets.chomp.to_f
 end
 
 triangle.sort!
 
 fail "Введетен некоректный треугольник." if triangle[0] < 1
 
-if triangle[0] == triangle[1] &&
-   triangle[0] == triangle[2]
+if triangle[0] == triangle[1] && triangle[0] == triangle[2]
   puts "Равносторонний треугольник"
   exit
 end
