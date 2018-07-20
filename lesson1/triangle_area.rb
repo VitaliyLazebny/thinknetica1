@@ -10,12 +10,12 @@
 # целые числа.)
 
 puts "Введите высоту треугольника."
-height = gets.chomp.to_i
+height = gets.chomp.to_f
 
 puts "Введите основание треугольника."
-base = gets.chomp.to_i
+base = gets.chomp.to_f
 
 fail "Некоректный размеры треугольника." if height < 1 || base < 1
 
 puts "Площадь треугольника."
-puts height.to_f * base / 2
+puts 0.5 * height * base
