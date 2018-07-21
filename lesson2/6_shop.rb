@@ -23,13 +23,13 @@ def enter_item
   puts "Пожалуйста введите название товара:"
   puts "Введите: 'стоп' чтобы закончить ввод."
   name = gets.chomp
-  return nil if name == 'стоп'
+  return if name == 'стоп'
 
   puts "Введите количество товара."
-  quantity = gets.chomp
+  quantity = gets.chomp.to_f
 
   puts "Введите цену за единицу."
-  price = gets.chomp
+  price = gets.chomp.to_f
 
   return name,
        { quantity: quantity,
@@ -41,3 +41,12 @@ while (item = enter_item) do
 end
 
 puts basket
+
+summ = 0
+basket.each do |name, val|
+  current_summ = val[:quantity] * val[:price]
+  puts "#{name}: #{current_summ}"
+  summ += current_summ
+end
+
+puts "Общая стоимость: #{summ}"

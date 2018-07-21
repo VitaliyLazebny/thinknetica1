@@ -30,8 +30,8 @@ def day_number(year, month, day)
   months[2] = 29 if leap_year?(year)
 
   # Calculation
-  1.upto(month) do
-    number += months[month]
+  1.upto(month-1) do |m|
+    number += months[m]
   end
 
   number += day
