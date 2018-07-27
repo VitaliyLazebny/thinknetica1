@@ -18,7 +18,7 @@ class Route
 
   def add_stations(stations)
     stations.each do |station|
-      arr.insert(-1, station)
+      station.insert(-1, station)
     end
   end
 
@@ -26,5 +26,31 @@ class Route
     @stations.delete_if do |s|
       s.id == station.id
     end
+  end
+
+  def get_current_station_index(station)
+    @stations.find_index do |s|
+      s.id == station.id
+    end
+  end
+
+  def get_next_station(station)
+    current_index = get_current_station_index(station)
+
+    return @stations[current_index] if current_index == size
+
+    @stations[current_index + 1]
+  end
+
+  def get_previous_station(station)
+    current_index = get_current_station_index(station)
+
+    return @stations[0] if current_index.zero?
+
+    @stations[current_index - 1]
+  end
+
+  def size
+    @stations.size
   end
 end
