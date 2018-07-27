@@ -16,6 +16,7 @@ class Train
     @type           = type
     @coaches_number = coaches_number
     @speed          = 0
+    @route          = nil
   end
 
   # -   -   -   -   -   -   -   -   -
@@ -26,11 +27,11 @@ class Train
   end
 
   def increase_speed
-    @speed++
+    @speed += 1
   end
 
   def decrase_speed
-    @speed--
+    @speed -= 1
   end
   # -   -   -   -   -   -   -   -   -
 
@@ -51,32 +52,31 @@ class Train
   end
 
   def add_coach
-    @coaches_number++
+    @coaches_number += 1
   end
 
   def leave_coach
-    @coaches_number--
+    @coaches_number -= 1
   end
   # -  -  -  -  -  -  -  -  -  -  -  -  -
 
-  def set_route
-
+  def set_route(route)
+    @route = route
+    set_current_station(route.first)
   end
 
-  def get_next_station
-
-  end
-
-  def get_previous_station
-
+  def set_current_station(station)
+    @station = station
   end
 
   def go_to_next_station
-
+    next_station = @route.get_next_station(@station)
+    set_current_station(next_station)
   end
 
   def go_to_previous_station
-
+    previous_station = @route.get_previous_station(@station)
+    set_current_station(previous_station)
   end
 
   # -  -  -  -  -  -  -  -  -  -  -  -  -

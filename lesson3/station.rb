@@ -13,6 +13,10 @@ class Station
     @trains = []
   end
 
+  def id
+    name
+  end
+
   def name
     @name
   end
