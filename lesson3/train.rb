@@ -50,6 +50,8 @@ class Train
   end
 
   def leave_coach
+    fail 'No coaches left.' if @coaches_number.zero?
+
     @coaches_number -= 1
   end
   # -  -  -  -  -  -  -  -  -  -  -  -  -
@@ -60,12 +62,12 @@ class Train
   end
 
   def go_to_next_station
-    next_station    = @route.get_next_station(current_station)
+    next_station    = @route.next_station(current_station)
     current_station = next_station
   end
 
   def go_to_previous_station
-    previous_station = @route.get_previous_station(current_station)
+    previous_station = @route.previous_station(current_station)
     current_station  = previous_station
   end
 
