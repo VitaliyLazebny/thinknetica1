@@ -8,21 +8,14 @@
 #
 
 class Station
+  attr_reader :name
+  attr_reader :trains
+
+  alias id name
+
   def initialize(name)
     @name   = name
     @trains = []
-  end
-
-  def id
-    name
-  end
-
-  def name
-    @name
-  end
-
-  def trains_list
-    @trains
   end
 
   def accept_train(train)
@@ -30,8 +23,6 @@ class Station
   end
 
   def send_train(train)
-    @trains.delete_if do |t|
-      t.id == train.id
-    end
+    @trains.delete(train)
   end
 end

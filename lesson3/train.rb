@@ -11,21 +11,28 @@
 # Возвращать предыдущую станцию, текущую, следующую, на основе маршрута
 
 class Train
+  attr_accessor :current_station
+
+  attr_reader   :speed
+  attr_reader   :name
+  attr_reader   :type
+  attr_reader   :coaches_number
+
+  alias size coaches_number
+  alias id   name
+
   def initialize(name, type, coaches_number)
-    @name           = name
-    @type           = type
-    @coaches_number = coaches_number
-    @speed          = 0
-    @route          = nil
+    @name            = name
+    @type            = type
+    @coaches_number  = coaches_number
+    @speed           = 0
+    @route           = nil
+    @current_station = nil
   end
 
   # -   -   -   -   -   -   -   -   -
   # Speed section
   #
-  def speed
-    @speed
-  end
-
   def increase_speed
     @speed += 1
   end
@@ -35,22 +42,9 @@ class Train
   end
   # -   -   -   -   -   -   -   -   -
 
-
-  def name
-    name
-  end
-
-  def type
-    @type
-  end
-
   # -  -  -  -  -  -  -  -  -  -  -  -
   # Coaches section
   #
-  def coaches_number
-    @coaches_number
-  end
-
   def add_coach
     @coaches_number += 1
   end
@@ -61,27 +55,19 @@ class Train
   # -  -  -  -  -  -  -  -  -  -  -  -  -
 
   def set_route(route)
-    @route = route
-    set_current_station(route.first)
-  end
-
-  def set_current_station(station)
-    @station = station
+    @route          = route
+    current_station = route.first
   end
 
   def go_to_next_station
-    next_station = @route.get_next_station(@station)
-    set_current_station(next_station)
+    next_station    = @route.get_next_station(current_station)
+    current_station = next_station
   end
 
   def go_to_previous_station
-    previous_station = @route.get_previous_station(@station)
-    set_current_station(previous_station)
+    previous_station = @route.get_previous_station(current_station)
+    current_station  = previous_station
   end
 
   # -  -  -  -  -  -  -  -  -  -  -  -  -
-
-  def size
-    coaches_number
-  end
 end
