@@ -10,21 +10,25 @@
 # Может перемещаться между станциями, указанными в маршруте. Перемещение возможно вперед и назад, но только на 1 станцию за раз.
 # Возвращать предыдущую станцию, текущую, следующую, на основе маршрута
 
+require 'm_entity_type'
+
 class Train
+  include EntityType
+
   attr_accessor :current_station
 
   attr_reader   :speed
   attr_reader   :name
   attr_reader   :type
-  attr_reader   :coaches_number
+  attr_reader   :coaches
 
   alias size coaches_number
   alias id   name
 
-  def initialize(name, type, coaches_number)
+  def initialize(name, type)
     @name            = name
     @type            = type
-    @coaches_number  = coaches_number
+    @coaches         = []
     @speed           = 0
     @route           = nil
     @current_station = nil
@@ -45,14 +49,16 @@ class Train
   # -  -  -  -  -  -  -  -  -  -  -  -
   # Coaches section
   #
-  def add_coach
-    @coaches_number += 1
+  def add_coach(coach)
+    fail 'Wrong coach type' if type != coach.type
+
+    @coaches.push(coach)
   end
 
   def leave_coach
     fail 'No coaches left.' if @coaches_number.zero?
 
-    @coaches_number -= 1
+    @coaches.pop
   end
   # -  -  -  -  -  -  -  -  -  -  -  -  -
 
