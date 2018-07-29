@@ -1,0 +1,6 @@
+#
+#
+#
+class PassengerCoach < Coach
+
+end
