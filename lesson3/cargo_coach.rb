@@ -1,7 +1,7 @@
 #
 #
 #
-require 'coach'
+require_relative 'coach'
 
 class CargoCoach < Coach
 
