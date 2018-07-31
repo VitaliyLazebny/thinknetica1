@@ -1,7 +1,7 @@
 #
 #
 #
-require 'train'
+require_relative 'train'
 
 class PassengerTrain < Train
 

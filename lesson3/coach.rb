@@ -1,7 +1,7 @@
 #
 # abstract Coach
 #
-require 'm_entity_type'
+require_relative 'm_entity_type'
 
 class Coach
   include EntityType

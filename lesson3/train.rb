@@ -10,7 +10,7 @@
 # Может перемещаться между станциями, указанными в маршруте. Перемещение возможно вперед и назад, но только на 1 станцию за раз.
 # Возвращать предыдущую станцию, текущую, следующую, на основе маршрута
 
-require 'm_entity_type'
+require_relative 'm_entity_type'
 
 class Train
   include EntityType
@@ -22,8 +22,7 @@ class Train
   attr_reader   :type
   attr_reader   :coaches
 
-  alias size coaches_number
-  alias id   name
+  alias id name
 
   def initialize(name, type)
     @name            = name
@@ -77,5 +76,8 @@ class Train
     current_station  = previous_station
   end
 
+  def size
+    coaches.number
+  end
   # -  -  -  -  -  -  -  -  -  -  -  -  -
 end
