@@ -79,5 +79,9 @@ class Train
   def size
     coaches.number
   end
+
+  def to_s
+    name
+  end
   # -  -  -  -  -  -  -  -  -  -  -  -  -
 end

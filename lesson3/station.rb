@@ -25,4 +25,8 @@ class Station
   def send_train(train)
     @trains.delete(train)
   end
+
+  def to_s
+    "Station '#{name}' with trains: #{trains.map(&:to_s).join(', ')}"
+  end
 end

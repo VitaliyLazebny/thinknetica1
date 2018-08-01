@@ -21,7 +21,6 @@ require_relative 'cargo_coach'
 require_relative 'passenger_coach'
 
 # Commands should not be hardcoded.
-
 global = {
     stations: {},
     trains:   [],
@@ -40,7 +39,7 @@ until false do
     name = parsed_command[2].capitalize
 
     global[:stations][name] = Station.new(name)
-    break
+
     # Create cargo train R334
   when parsed_command[0] == 'create' &&
       parsed_command[2] == 'train'
@@ -49,7 +48,7 @@ until false do
     type = parsed_command[1]
 
     global[:trains].push Train.new(name, type)
-    break
+
     # Create route with Myrna and Zalizna
   when command.start_with?('create route with')
     first_station = parsed_command[3].capitalize
@@ -61,21 +60,21 @@ until false do
         global[:stations][first_station],
         global[:stations][last_station]
     )
-    break
+
     # Add station Sonechko to Myrna-Zaliznychna
   when command.start_with?('add station')
     station = parsed_command[2].capitalize
     route = parsed_command[4].split('-').map(&:capitalize).join('-')
 
     global[:routes][route].add_stations([station])
-    break
+
     # Remove station Sonechko from Myrna-Zaliznychna
   when command.start_with?('remove station')
     station = global[:station][parsed_command[2].capitalize]
     route = parsed_command[4].split('-').map(&:capitalize).join('-')
 
     global[:routes][route].remove_station(station)
-    break
+
     # Set route Myrna-Zaliznychna to train R334
   when command.start_with?('set route')
     train = parsed_command.last
@@ -83,7 +82,6 @@ until false do
 
     global[:trains][train].set_route(route)
 
-    break
     # Add coach to train R334
   when command.start_with?('add coach to train')
     train = global[:trains][parsed_command[4]]
@@ -92,25 +90,26 @@ until false do
     global[:coaches].push coaches
 
     train.add_coach(coach)
-    break
 
     # Train R334 should leave coach
   when command.end_with?('should leave coach')
     train = global[:trains][parsed_command[1]]
 
     train.leave_coach
-    break
+
     # Train R334 should go to next station
   when command.end_with?('should go to next station')
     train = global[:trains][parsed_command[1]]
 
     train.go_to_next_station
-    break
+
     # Train R334 should go to previous station
   when command.end_with?('should go to previous station')
     train = global[:trains][parsed_command[1]]
 
     train.go_to_previous_station
+  when command == 'list entities'
+    puts global[:stations]
   end
 
   break if command == 'stop'
