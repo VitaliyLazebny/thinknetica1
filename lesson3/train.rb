@@ -19,14 +19,12 @@ class Train
 
   attr_reader   :speed
   attr_reader   :name
-  attr_reader   :type
   attr_reader   :coaches
 
   alias id name
 
-  def initialize(name, type)
+  def initialize(name)
     @name            = name
-    @type            = type
     @coaches         = []
     @speed           = 0
     @route           = nil
@@ -55,7 +53,7 @@ class Train
   end
 
   def leave_coach
-    fail 'No coaches left.' if @coaches_number.zero?
+    fail 'No coaches left.' if size.zero?
 
     @coaches.pop
   end
@@ -77,7 +75,7 @@ class Train
   end
 
   def size
-    coaches.number
+    coaches.size
   end
 
   def to_s
