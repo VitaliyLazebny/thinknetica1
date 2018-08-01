@@ -27,6 +27,9 @@ class Station
   end
 
   def to_s
-    "Station '#{name}' with trains: #{trains.map(&:to_s).join(', ')}"
+    res  = "Station '#{name}'"
+    res +=" with trains: #{trains.map(&:to_s).join(', ')}" unless trains.empty?
+
+    res
   end
 end
