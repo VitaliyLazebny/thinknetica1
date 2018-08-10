@@ -15,12 +15,11 @@ require_relative 'm_entity_type'
 class Train
   include EntityType
 
-  attr_accessor :current_station
-
   attr_reader :speed
   attr_reader :name
   attr_reader :coaches
-  attr_reader :
+  attr_reader :route
+  attr_reader :current_station
 
   alias id name
 
@@ -63,16 +62,24 @@ class Train
   def set_route(route)
     @route           = route
     @current_station = route.first
+    @current_station.accept_train self
   end
 
   def go_to_next_station
     next_station    = @route.next_station(current_station)
+    @current_station.send_train self
+
     @current_station = next_station
+    @current_station.accept_train self
   end
 
   def go_to_previous_station
+    @current_station.send_train self
+
     previous_station = @route.previous_station(current_station)
     @current_station  = previous_station
+
+    @current_station.accept_train self
   end
 
   def size

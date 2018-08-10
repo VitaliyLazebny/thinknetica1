@@ -31,7 +31,7 @@ class Route
 
     return @stations[current_index] if current_station_index == size
 
-    @stations[current_index + 1]
+    @stations[current_station_index + 1]
   end
 
   def previous_station(station)
