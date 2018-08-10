@@ -8,10 +8,6 @@
 class Route
   attr_reader :stations
 
-  def id
-    first_station.id + '-' + last_station.id
-  end
-
   def initialize(first_station, last_station, intermediate_stations = nil)
     @stations = [first_station, last_station]
 
@@ -46,8 +42,20 @@ class Route
     @stations[current_index - 1]
   end
 
+  def first
+    @stations.first
+  end
+
+  def last
+    @stations.last
+  end
+
   def name
-    @stations.first.name + '-' + @stations.last.name
+    first.name + '-' + last.name
+  end
+
+  def id
+    name
   end
 
   def size
