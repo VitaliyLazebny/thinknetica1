@@ -17,9 +17,10 @@ class Train
 
   attr_accessor :current_station
 
-  attr_reader   :speed
-  attr_reader   :name
-  attr_reader   :coaches
+  attr_reader :speed
+  attr_reader :name
+  attr_reader :coaches
+  attr_reader :
 
   alias id name
 
@@ -60,18 +61,18 @@ class Train
   # -  -  -  -  -  -  -  -  -  -  -  -  -
 
   def set_route(route)
-    @route          = route
-    current_station = route.first
+    @route           = route
+    @current_station = route.first
   end
 
   def go_to_next_station
     next_station    = @route.next_station(current_station)
-    current_station = next_station
+    @current_station = next_station
   end
 
   def go_to_previous_station
     previous_station = @route.previous_station(current_station)
-    current_station  = previous_station
+    @current_station  = previous_station
   end
 
   def size

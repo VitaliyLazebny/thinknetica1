@@ -132,7 +132,7 @@ loop do
     route   = gets.chomp.to_i
     fail "Route #{route} doesn't exist." if route < 0 || route > global[:routes].size - 1
     fail "Station can't be removed since" +
-         " route contains only 2 station (first and last)." if global[:routes][route].stations < 3
+         " route contains only 2 station (first and last)." if global[:routes][route].stations.size < 3
 
     puts "List of stations:"
     global[:routes][route].stations.each_with_index do |station, index|
@@ -143,10 +143,12 @@ loop do
     station = gets.chomp.to_i
     fail "Station #{station} absent in this route." if station < 0 || station > global[:routes][route].stations.size - 1
 
-    global[:routes][route].remove_station global[:routes][route][station]
+    global[:routes][route].remove_station global[:routes][route].stations[station]
     puts "Station #{global[:stations][station].name} from route #{global[:routes][route].name} was successfully removed."
 
   when 6 # Set route to train
+    fail "There's no routes to assign." if global[:routes].size < 1
+
     puts "Routes list:"
     global[:routes].each_with_index do |route, index|
       puts "#{index}. #{route.name}"
@@ -163,7 +165,7 @@ loop do
 
     puts "Please enter train number:"
     train   = gets.chomp.to_i
-    fail "Route #{train} doesn't exist." if train < 0 || train > global[:train].size - 1
+    fail "Route #{train} doesn't exist." if train < 0 || train > global[:trains].size - 1
 
     global[:trains][train].set_route global[:routes][route]
     puts "Route #{global[:routes][route].name} was set to #{global[:trains][train].name} "
@@ -176,7 +178,7 @@ loop do
 
     puts "Please enter train number:"
     train   = gets.chomp.to_i
-    fail "Route #{train} doesn't exist." if train < 0 || train > global[:train].size - 1
+    fail "Route #{train} doesn't exist." if train < 0 || train > global[:trains].size - 1
 
     train = global[:trains][train]
 
@@ -199,12 +201,12 @@ loop do
 
     puts "Please enter train number:"
     train   = gets.chomp.to_i
-    fail "Route #{train} doesn't exist." if train < 0 || train > global[:train].size - 1
+    fail "Route #{train} doesn't exist." if train < 0 || train > global[:trains].size - 1
 
     train = global[:trains][train]
 
     train.leave_coach
-    puts "Coach was successfully removed from train #{train.name}."
+    puts "Coach was successfully leaved by train #{train.name}."
 
   when 9 # Train R334 should go to next station
          # Train R334 should go to previous station
@@ -215,9 +217,10 @@ loop do
 
     puts "Please enter train number:"
     train   = gets.chomp.to_i
-    fail "Route #{train} doesn't exist." if train < 0 || train > global[:train].size - 1
+    fail "Route #{train} doesn't exist." if train < 0 || train > global[:trains].size - 1
 
     train = global[:trains][train]
+    fail "Train #{train.name} doesn't have assigned route and station." if train.route.nil? || train.current_station.nil?
 
     puts "Directions:"
     puts "1. Next station"
