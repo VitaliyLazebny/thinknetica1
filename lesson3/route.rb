@@ -46,6 +46,10 @@ class Route
     @stations[current_index - 1]
   end
 
+  def name
+    @stations.first.name + '-' + @stations.last.name
+  end
+
   def size
     @stations.size
   end
