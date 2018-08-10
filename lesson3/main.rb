@@ -30,25 +30,25 @@ global = {
 }
 
 loop do
-  puts "Please enter command code (1-11):"
-  puts " 1. Create station"
-  puts " 2. Create train"
-  puts " 3. Create route"
-  puts " 4. Add station to route"
-  puts " 5. Remove station"
-  puts " 6. Set route"
-  puts " 7. Add coach"
-  puts " 8. Remove coach from train"
-  puts " 9. Move train"
-  puts "10. List stations and trains on station"
+  puts 'Please enter command code (1-11):'
+  puts ' 1. Create station'
+  puts ' 2. Create train'
+  puts ' 3. Create route'
+  puts ' 4. Add station to route'
+  puts ' 5. Remove station'
+  puts ' 6. Set route'
+  puts ' 7. Add coach'
+  puts ' 8. Remove coach from train'
+  puts ' 9. Move train'
+  puts '10. List stations and trains on station'
   puts "11. Exit from programm\n\n"
 
   command = gets.chomp.to_i
 
   case command
   when 1 # create station
-    puts "Please enter station name:"
-    puts "(case sensitive)"
+    puts 'Please enter station name:'
+    puts '(case sensitive)'
     station_name = gets.chomp
 
     global[:stations].push Station.new(station_name)
@@ -56,13 +56,13 @@ loop do
     puts "Station #{station_name} was created."
 
   when 2 # Create train
-    puts "Please enter train name:"
-    puts "(case sensitive)"
+    puts 'Please enter train name:'
+    puts '(case sensitive)'
     name = gets.chomp
 
-    puts "Please enter train type:"
-    puts "1. Cargo"
-    puts "2. Passenger"
+    puts 'Please enter train type:'
+    puts '1. Cargo'
+    puts '2. Passenger'
     type = gets.chomp.to_i
     fail 'Incorrect train type was entered.' unless [1,2].include? type
 
@@ -78,16 +78,16 @@ loop do
   when 3 # Create route with start and end stations.
     fail "Route can be created only if there's 2 or more stations." if global[:stations].size < 2
 
-    puts "List of stations:"
+    puts 'List of stations:'
     global[:stations].each_with_index do |station, index|
       puts "#{index}. #{station.name}"
     end
 
-    puts "Please enter first station number:"
+    puts 'Please enter first station number:'
     first_station = gets.chomp.to_i
     fail "Station doesn't exists." if first_station < 0 || first_station > global[:stations].size - 1
 
-    puts "Please enter last station number:"
+    puts 'Please enter last station number:'
     last_station  = gets.chomp.to_i
     fail "Station doesn't exists." if last_station < 0 || last_station > global[:stations].size - 1
 
@@ -97,49 +97,49 @@ loop do
     puts "Route #{global[:routes].last.name} was created."
 
   when 4  # Add station to route
-    fail "No routes added to system" if global[:routes].size < 1
+    fail 'No routes added to system' if global[:routes].size < 1
 
-    puts "Routes list:"
+    puts 'Routes list:'
     global[:routes].each_with_index do |route, index|
       puts "#{index}. #{route.name}"
     end
 
-    puts "Please enter route number:"
+    puts 'Please enter route number:'
     route   = gets.chomp.to_i
     fail "Route #{route} doesn't exist." if route < 0 || route > global[:routes].size - 1
 
-    puts "List of stations:"
+    puts 'List of stations:'
     global[:stations].each_with_index do |station, index|
       puts "#{index}. #{station.name}"
     end
 
-    puts "Please enter station number:"
+    puts 'Please enter station number:'
     station = gets.chomp.to_i
     fail "Route #{station} doesn't exist." if station < 0 || station > global[:stations].size - 1
     fail "Route #{global[:routes][route].name} already contains " +
          "Station #{global[:stations][station].name}" if global[:routes][route].stations.include? global[:stations][station]
 
     global[:routes][route].add_stations [global[:stations][station]]
-    puts "Station was successfully added to Route."
+    puts 'Station was successfully added to Route.'
 
   when 5 # Remove station from route
-    puts "Routes list:"
+    puts 'Routes list:'
     global[:routes].each_with_index do |route, index|
       puts "#{index}. #{route.name}"
     end
 
-    puts "Please enter route number:"
+    puts 'Please enter route number:'
     route   = gets.chomp.to_i
     fail "Route #{route} doesn't exist." if route < 0 || route > global[:routes].size - 1
     fail "Station can't be removed since" +
-         " route contains only 2 station (first and last)." if global[:routes][route].stations.size < 3
+         ' route contains only 2 station (first and last).' if global[:routes][route].stations.size < 3
 
-    puts "List of stations:"
+    puts 'List of stations:'
     global[:routes][route].stations.each_with_index do |station, index|
       puts "#{index}. #{station.name}"
     end
 
-    puts "Please enter station number:"
+    puts 'Please enter station number:'
     station = gets.chomp.to_i
     fail "Station #{station} absent in this route." if station < 0 || station > global[:routes][route].stations.size - 1
 
@@ -149,21 +149,21 @@ loop do
   when 6 # Set route to train
     fail "There's no routes to assign." if global[:routes].size < 1
 
-    puts "Routes list:"
+    puts 'Routes list:'
     global[:routes].each_with_index do |route, index|
       puts "#{index}. #{route.name}"
     end
 
-    puts "Please enter route number:"
+    puts 'Please enter route number:'
     route   = gets.chomp.to_i
     fail "Route #{route} doesn't exist." if route < 0 || route > global[:routes].size - 1
 
-    puts "Trains list:"
+    puts 'Trains list:'
     global[:trains].each_with_index do |train, index|
       puts "#{index}. #{train.name}"
     end
 
-    puts "Please enter train number:"
+    puts 'Please enter train number:'
     train   = gets.chomp.to_i
     fail "Route #{train} doesn't exist." if train < 0 || train > global[:trains].size - 1
 
@@ -171,22 +171,22 @@ loop do
     puts "Route #{global[:routes][route].name} was set to #{global[:trains][train].name} "
 
   when 7  # Add coach to train
-    puts "Trains list:"
+    puts 'Trains list:'
     global[:trains].each_with_index do |train, index|
       puts "#{index}. #{train.name}"
     end
 
-    puts "Please enter train number:"
+    puts 'Please enter train number:'
     train   = gets.chomp.to_i
     fail "Route #{train} doesn't exist." if train < 0 || train > global[:trains].size - 1
 
     train = global[:trains][train]
 
-    if train.type == 'cargo'
-      coach = CargoCoach.new
-    else
-      coach = PassengerCoach.new
-    end
+    coach = if train.type == 'cargo'
+              CargoCoach.new
+            else
+              PassengerCoach.new
+            end
 
     global[:coaches].push coach
 
@@ -194,13 +194,13 @@ loop do
     puts "Coach was successfully added to train #{train.name}."
 
   when 8 # Train R334 should leave coach
-    puts "Trains list:"
+    puts 'Trains list:'
     global[:trains].each_with_index do |train, index|
       puts "#{index}. #{train.name}"
     end
 
-    puts "Please enter train number:"
-    train   = gets.chomp.to_i
+    puts 'Please enter train number:'
+    train = gets.chomp.to_i
     fail "Route #{train} doesn't exist." if train < 0 || train > global[:trains].size - 1
 
     train = global[:trains][train]
@@ -210,23 +210,23 @@ loop do
 
   when 9 # Train R334 should go to next station
          # Train R334 should go to previous station
-    puts "Trains list:"
+    puts 'Trains list:'
     global[:trains].each_with_index do |train, index|
       puts "#{index}. #{train.name}"
     end
 
-    puts "Please enter train number:"
+    puts 'Please enter train number:'
     train   = gets.chomp.to_i
     fail "Route #{train} doesn't exist." if train < 0 || train > global[:trains].size - 1
 
     train = global[:trains][train]
     fail "Train #{train.name} doesn't have assigned route and station." if train.route.nil? || train.current_station.nil?
 
-    puts "Directions:"
-    puts "1. Next station"
-    puts "2. previous station"
-    puts "Please enter direction number:"
-    direction   = gets.chomp.to_i
+    puts 'Directions:'
+    puts '1. Next station'
+    puts '2. previous station'
+    puts 'Please enter direction number:'
+    direction = gets.chomp.to_i
     fail 'Direction not applicable.' unless [1,2].include?(direction)
 
     if direction == 1
@@ -237,20 +237,28 @@ loop do
     puts "Train #{train.name} changed location to #{direction == 1 ? 'next' : 'previous'} station."
 
   when 10 # List stations and trains on station
-    puts "List of stations:"
-    global[:stations].each_with_index do |station, index|
-      puts "#{index}. #{station.name}"
+    if global[:stations].size > 0
+      puts 'List of stations:'
+      global[:stations].each_with_index do |station, index|
+        puts "#{index}. #{station.name}"
+      end
+    else
+      puts "There's no Stations created."
     end
 
-    puts "Please enter station number:"
+    puts 'Please enter station number:'
     station = gets.chomp.to_i
     fail "Route #{station} doesn't exist." if station < 0 || station > global[:stations].size - 1
 
-    puts "List of trains on station:"
-    global[:stations][station].trains.each_with_index do |station, index|
-      puts "#{index}. #{station.name}"
+    if global[:stations][station].trains.size > 0
+      puts 'List of trains on station:'
+      global[:stations][station].trains.each_with_index do |station, index|
+        puts "#{index}. #{station.name}"
+      end
+      puts '...All trains from chosen station were displayed.'
+    else
+      puts "There's no trains on this station."
     end
-    puts "\n\n\nAll trains from chosen station were displayed."
 
   when 11 # Stop
     puts 'Exiting from program.'
