@@ -10,10 +10,12 @@
 # Может перемещаться между станциями, указанными в маршруте. Перемещение возможно вперед и назад, но только на 1 станцию за раз.
 # Возвращать предыдущую станцию, текущую, следующую, на основе маршрута
 
-require_relative 'm_entity_type'
+require_relative 'modules/entity_type'
+require_relative 'modules/manufacturer'
 
 class Train
   include EntityType
+  include Manufacturer
 
   attr_reader :speed
   attr_reader :name
