@@ -32,4 +32,9 @@ class Station
 
     res
   end
+
+  # Station.all -> return all instances
+  def self.all
+    ObjectSpace.each_object(self).to_a
+  end
 end
