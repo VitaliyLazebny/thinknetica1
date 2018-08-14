@@ -1,17 +1,17 @@
 
 module InstanceCounter
-  def self.all
+  def all
     ObjectSpace.each_object(self).to_a
   end
 
-  def self.find(name)
+  def find(name)
     self.class.all.detect do |t|
       t.name == name
     end
   end
 
   # not 'instances' to have clear naming
-  def self.instances_number
+  def instances_number
     self.all.size
   end
 
