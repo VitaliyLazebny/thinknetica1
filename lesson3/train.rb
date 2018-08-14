@@ -24,6 +24,7 @@ class Train
   attr_reader :current_station
 
   alias id name
+  alias number name
 
   def initialize(name)
     @name            = name
