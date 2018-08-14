@@ -12,10 +12,12 @@
 
 require_relative 'modules/entity_type'
 require_relative 'modules/manufacturer'
+require_relative 'modules/instance_counter'
 
 class Train
   include EntityType
   include Manufacturer
+  extend InstanceCounter
 
   attr_reader :speed
   attr_reader :name
@@ -92,5 +94,7 @@ class Train
   def to_s
     name
   end
+
+
   # -  -  -  -  -  -  -  -  -  -  -  -  -
 end
