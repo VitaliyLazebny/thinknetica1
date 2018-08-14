@@ -7,7 +7,11 @@
 # Может отправлять поезда (по одному за раз, при этом, поезд удаляется из списка поездов, находящихся на станции).
 #
 
+require_relative 'modules/instance_counter'
+
 class Station
+  extend InstanceCounter
+
   attr_reader :name
   attr_reader :trains
 
@@ -33,8 +37,5 @@ class Station
     res
   end
 
-  # Station.all -> return all instances
-  def self.all
-    ObjectSpace.each_object(self).to_a
-  end
+
 end
