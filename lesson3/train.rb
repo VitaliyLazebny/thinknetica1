@@ -17,7 +17,8 @@ require_relative 'modules/instance_counter'
 class Train
   include EntityType
   include Manufacturer
-  extend InstanceCounter
+  extend  InstanceCounter::ClassMethods
+  include InstanceCounter::InstanceMethods
 
   attr_reader :speed
   attr_reader :name
@@ -34,6 +35,8 @@ class Train
     @speed           = 0
     @route           = nil
     @current_station = nil
+
+    register_instance
   end
 
   # -   -   -   -   -   -   -   -   -
