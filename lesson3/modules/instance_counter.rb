@@ -1,19 +1,23 @@
-
 module InstanceCounter
-  def all
-    ObjectSpace.each_object(self).to_a
-  end
+  module ClassMethods
+    def all
+      @@all
+    end
 
-  def find(name)
-    self.class.all.detect do |t|
-      t.name == name
+    def find(name)
+      @@all[name]
+    end
+
+    # not 'instances' to have clear naming
+    def instances_number
+      self.all.keys.size
     end
   end
 
-  # not 'instances' to have clear naming
-  def instances_number
-    self.all.size
+  module InstanceMethods
+    def register_instance
+      @@all ||= {}
+      @@all[self.name]=self
+    end
   end
-
-  # no need for 'register_instances' method
 end
