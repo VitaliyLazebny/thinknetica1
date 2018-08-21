@@ -1,5 +1,7 @@
 module InstanceCounter
   module ClassMethods
+    @@all = {}
+
     def all
       @@all
     end
@@ -8,7 +10,10 @@ module InstanceCounter
       @@all[name]
     end
 
-    # not 'instances' to have clear naming
+    def instances
+      instances_number
+    end
+
     def instances_number
       self.all.keys.size
     end
@@ -16,8 +21,7 @@ module InstanceCounter
 
   module InstanceMethods
     def register_instance
-      @@all ||= {}
-      @@all[self.name]=self
+      self.class.all[self.name]=self
     end
   end
 end

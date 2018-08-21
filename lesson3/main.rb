@@ -20,7 +20,6 @@ require_relative 'passenger_train'
 require_relative 'cargo_coach'
 require_relative 'passenger_coach'
 
-
 # Commands should not be hardcoded.
 global = {
     stations: [],
