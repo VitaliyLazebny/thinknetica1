@@ -37,6 +37,14 @@ class Train
     @current_station = nil
 
     register_instance
+
+    fail "Invalid class data was entered." unless valid?
+  end
+
+  def valid?
+    return false unless (/[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}/ =~ @name)
+
+    true
   end
 
   # -   -   -   -   -   -   -   -   -
@@ -97,7 +105,6 @@ class Train
   def to_s
     name
   end
-
 
   # -  -  -  -  -  -  -  -  -  -  -  -  -
 end
