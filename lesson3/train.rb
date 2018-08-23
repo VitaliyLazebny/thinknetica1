@@ -36,13 +36,20 @@ class Train
     @route           = nil
     @current_station = nil
 
-    register_instance
-
     fail "Invalid class data was entered." unless valid?
+
+    register_instance
   end
 
   def valid?
-    return false unless (/[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}/ =~ @name)
+    # Name should be:
+    # 3 word characters +
+    # optional bar      +
+    # 2 word characters
+    return false unless @name[/^[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}$/]
+
+    # Train with given name already exist
+    return false if self.class.find(@name)
 
     true
   end
