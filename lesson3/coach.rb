@@ -8,8 +8,7 @@ require_relative 'modules/instance_counter'
 class Coach
   include EntityType
   include Manufacturer
-  extend  InstanceCounter::ClassMethods
-  include InstanceCounter::InstanceMethods
+  include InstanceCounter
 
   def initialize
     register_instance
