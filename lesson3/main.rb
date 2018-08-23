@@ -28,6 +28,31 @@ global = {
     coaches:  []
 }
 
+def create_train(global)
+  puts 'Please enter train name:'
+  puts '(case sensitive)'
+  name = gets.chomp
+
+  puts 'Please enter train type:'
+  puts '1. Cargo'
+  puts '2. Passenger'
+  type = gets.chomp.to_i
+  fail 'Incorrect train type was entered.' unless [1,2].include? type
+
+  if    type == 1 # cargo
+    train = CargoTrain.new(name)
+  else # passenger
+    train = PassengerTrain.new(name)
+  end
+
+rescue => ex
+  puts "Error: #{ex.message}"
+  retry
+else
+  global[:trains].push train
+  puts "Train '#{train.name}' was created."
+end
+
 loop do
   puts 'Please enter command code (1-11):'
   puts ' 1. Create station'
@@ -55,24 +80,7 @@ loop do
     puts "Station #{station_name} was created."
 
   when 2 # Create train
-    puts 'Please enter train name:'
-    puts '(case sensitive)'
-    name = gets.chomp
-
-    puts 'Please enter train type:'
-    puts '1. Cargo'
-    puts '2. Passenger'
-    type = gets.chomp.to_i
-    fail 'Incorrect train type was entered.' unless [1,2].include? type
-
-    if    type == 1 # cargo
-      train = CargoTrain.new(name)
-    else # passenger
-      train = PassengerTrain.new(name)
-    end
-
-    global[:trains].push train
-    puts "Train '#{train.name}' was created."
+    create_train(global)
 
   when 3 # Create route with start and end stations.
     fail "Route can be created only if there's 2 or more stations." if global[:stations].size < 2
