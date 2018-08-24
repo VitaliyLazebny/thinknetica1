@@ -28,21 +28,20 @@ class Station
 
   # -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
   # Validation methods
-  def validate!
-    fail 'Invalid class data was entered.' unless valid?
+  def valide?
+    validate!
+  rescue
+    false
+  else
+    true
   end
 
-  def valid?
-    # Name should be:
-    # 3 word characters +
-    # optional bar      +
-    # 2 word characters
-    return false if !@name.is_a?(String) || @name.size < 3
+  def validate!
+    # Name should be String longer then 3 symbols.
+    fail 'Name should be String longer then 3 symbols.' if !@name.is_a?(String) || @name.size < 3
 
     # Station with given name already exist
-    return false if self.class.find(@name)
-
-    true
+    fail 'Station with given name already exist.' if self.class.find(@name)
   end
   # -   -   -   -   -   -   -   -   -
 

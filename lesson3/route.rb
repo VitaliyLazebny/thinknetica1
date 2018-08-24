@@ -18,23 +18,25 @@ class Route
 
   #  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
   # Validation methods
-  def validate!
-    fail 'Invalid class data was entered.' unless valid?
+  def valide?
+    validate!
+  rescue
+    false
+  else
+    true
   end
 
-  def valid?
+  def validate!
     # @stations was filled and all
     # elements should be Stations
     if !stations.empty?
       stations.each do |is|
-        return false unless is.is_a?(Station)
+        fail 'All stations should be Station class.' unless is.is_a?(Station)
       end
     end
 
     # Stations in route should be uniq
-    return false if stations.size != stations.uniq.size
-
-    true
+    fail 'Some stations are added to route few times.' if stations.size != stations.uniq.size
   end
   #
   #  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
