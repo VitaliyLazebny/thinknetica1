@@ -12,42 +12,75 @@ class Route
     @stations = [first_station, last_station]
 
     add_stations(intermediate_stations) if intermediate_stations
+
+    validate!
   end
 
-  def add_stations(stations)
-    @stations.insert(-1, *stations)
+  #  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+  # Validation methods
+  def validate!
+    fail 'Invalid class data was entered.' unless valid?
+  end
+
+  def valid?
+    # @stations was filled and all
+    # elements should be Stations
+    if !stations.empty?
+      stations.each do |is|
+        return false unless is.is_a?(Station)
+      end
+    end
+
+    # Stations in route should be uniq
+    return false if stations.size != stations.uniq.size
+
+    true
+  end
+  #
+  #  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+  def add_stations(stations_arg)
+    # Don't add same stations twice.
+    already_added_stations = stations_arg & stations
+    unless already_added_stations.empty?
+      fail "Stations #{already_added_stations.map{|s| s.name}.join('", "')} were already added."
+    end
+
+    stations.insert(-1, *stations_arg)
   end
 
   def remove_station(station)
-    @stations.delete(station)
+    fail "Station '#{station.name}' is absent in Route." unless station_index(station)
+
+    stations.delete(station)
   end
 
   def station_index(station)
-    @stations.find_index { |s| s == station }
+    stations.find_index { |s| s == station }
   end
 
   def next_station(station)
-    current_station_index = station_index(station)
+    current_index = station_index(station)
 
-    return @stations[current_index] if current_station_index == size
+    return last if station == last
 
-    @stations[current_station_index + 1]
+    stations[current_index + 1]
   end
 
   def previous_station(station)
-    current_station_index = station_index(station)
+    current_index = station_index(station)
 
-    return @stations[0] if current_station_index.zero?
+    return first if station == first
 
-    @stations[current_index - 1]
+    stations[current_index - 1]
   end
 
   def first
-    @stations.first
+    stations.first
   end
 
   def last
-    @stations.last
+    stations.last
   end
 
   def name
@@ -59,6 +92,6 @@ class Route
   end
 
   def size
-    @stations.size
+    stations.size
   end
 end

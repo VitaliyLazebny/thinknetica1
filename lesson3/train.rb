@@ -35,12 +35,21 @@ class Train
     @route           = nil
     @current_station = nil
 
-    fail "Invalid class data was entered." unless valid?
+    validate!
 
     register_instance
   end
 
+  # -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+  # Validation methods
+  def validate!
+    fail 'Invalid class data was entered.' unless valid?
+  end
+
   def valid?
+    # name should be String.
+    return false unless @name.is_a?(String)
+
     # Name should be:
     # 3 word characters +
     # optional bar      +
@@ -52,6 +61,7 @@ class Train
 
     true
   end
+  # -   -   -   -   -   -   -   -   -
 
   # -   -   -   -   -   -   -   -   -
   # Speed section

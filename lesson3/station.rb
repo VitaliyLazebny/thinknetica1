@@ -21,8 +21,30 @@ class Station
     @name   = name
     @trains = []
 
+    validate!
+
     register_instance
   end
+
+  # -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+  # Validation methods
+  def validate!
+    fail 'Invalid class data was entered.' unless valid?
+  end
+
+  def valid?
+    # Name should be:
+    # 3 word characters +
+    # optional bar      +
+    # 2 word characters
+    return false if !@name.is_a?(String) || @name.size < 3
+
+    # Station with given name already exist
+    return false if self.class.find(@name)
+
+    true
+  end
+  # -   -   -   -   -   -   -   -   -
 
   def accept_train(train)
     @trains.push(train)
