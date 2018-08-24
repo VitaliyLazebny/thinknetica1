@@ -42,24 +42,26 @@ class Train
 
   # -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
   # Validation methods
-  def validate!
-    fail 'Invalid class data was entered.' unless valid?
+  def valide?
+    validate!
+  rescue
+    false
+  else
+    true
   end
 
   def valid?
     # name should be String.
-    return false unless @name.is_a?(String)
+    fail 'Name should be text string.' unless @name.is_a?(String)
 
     # Name should be:
     # 3 word characters +
     # optional bar      +
     # 2 word characters
-    return false unless @name[/^[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}$/]
+    fail 'Incorrect name format.' unless @name[/^[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}$/]
 
     # Train with given name already exist
-    return false if self.class.find(@name)
-
-    true
+    fail 'Train with given name already exist.' if self.class.find(@name)
   end
   # -   -   -   -   -   -   -   -   -
 
