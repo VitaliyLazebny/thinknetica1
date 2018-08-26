@@ -163,7 +163,10 @@ def add_coach_to_train
   coach = if train.type == 'cargo'
             CargoCoach.new
           else
-            PassengerCoach.new
+            puts 'Please enter number of places:'
+            places = gets.chomp.to_i
+
+            PassengerCoach.new(places)
           end
 
   global[:coaches].push coach
