@@ -12,6 +12,8 @@ class PassengerCoach < Coach
 
     @total_places    = total
     @occupied_places = 0
+
+    super
   end
 
   def available_places
