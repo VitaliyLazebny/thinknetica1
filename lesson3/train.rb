@@ -124,5 +124,11 @@ class Train
     name
   end
 
+  # Iteration
+  def each
+    @coaches.each do |coach|
+      yield(coach)
+    end
+  end
   # -  -  -  -  -  -  -  -  -  -  -  -  -
 end
