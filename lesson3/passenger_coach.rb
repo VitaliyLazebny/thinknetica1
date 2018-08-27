@@ -21,7 +21,7 @@ class PassengerCoach < Coach
   end
 
   def occupy_place
-    fail 'All places was already ocupied.' if occupied_places >= total_places
+    fail 'All places was already ocupied.' if available_places.zero?
 
     @occupied_places += 1
   end
