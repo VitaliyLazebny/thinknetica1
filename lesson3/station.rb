@@ -55,10 +55,15 @@ class Station
 
   def to_s
     res  = "Station '#{name}'"
-    res +=" with trains: #{trains.map(&:to_s).join(', ')}" unless trains.empty?
+    res += " with trains: #{trains.map(&:to_s).join(', ')}" unless trains.empty?
 
     res
   end
 
-
+  # Iteration
+  def each
+    @trains.each do |train|
+      yield(train)
+    end
+  end
 end
