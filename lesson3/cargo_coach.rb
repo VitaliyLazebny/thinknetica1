@@ -14,17 +14,19 @@ class CargoCoach < Coach
 
     @total_volume    = total
     @occupied_volume = 0
-
-    super
   end
 
   def available_volume
-    @total_volume - @occupied_volume
+    total_volume - occupied_volume
   end
 
   def occupy_volume
     fail 'All places was already ocupied.' if available_volume.zero?
 
     @occupied_volume += 1
+  end
+
+  def to_s
+    "Type: #{type}. Available volume: #{available_volume}. Ocupied volume: #{occupied_volume}"
   end
 end

@@ -61,9 +61,15 @@ class Station
   end
 
   # Iteration
-  def each
+  def each_train
     @trains.each do |train|
       yield(train)
+    end
+  end
+
+  def each_train_with_index
+    @trains.each_with_index do |index, train|
+      yield(index, train)
     end
   end
 end

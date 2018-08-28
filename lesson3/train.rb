@@ -50,7 +50,7 @@ class Train
     true
   end
 
-  def valid?
+  def validate!
     # name should be String.
     fail 'Name should be text string.' unless @name.is_a?(String)
 
@@ -121,13 +121,19 @@ class Train
   end
 
   def to_s
-    name
+    "Number: '#{name}'. Type: #{type}. Coaches number: #{size}."
   end
 
   # Iteration
-  def each
+  def each_coach
     @coaches.each do |coach|
       yield(coach)
+    end
+  end
+
+  def each_coach_with_index
+    @coaches.each_with_index do |coach, index|
+      yield(index, coach)
     end
   end
   # -  -  -  -  -  -  -  -  -  -  -  -  -
