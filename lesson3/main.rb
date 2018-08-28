@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Text interface to railway facilities
 #
@@ -22,10 +24,10 @@ require_relative 'cargo_coach'
 require_relative 'passenger_coach'
 
 global = {
-    stations: [],
-    trains:   [],
-    routes:   [],
-    coaches:  []
+  stations: [],
+  trains:   [],
+  routes:   [],
+  coaches:  []
 }
 
 loop do
@@ -41,7 +43,7 @@ loop do
   puts ' 9. Move train'
   puts '10. Occupy coach space'
   puts '11. List stations and trains on station'
-  puts "12. Exit from programm\n\n"
+  puts "12. Exit from program\n\n"
 
   command = gets.chomp.to_i
 
@@ -52,18 +54,18 @@ loop do
     create_train(global)
   when 3 # Create route with start and end stations.
     create_route(global)
-  when 4  # Add station to route
+  when 4 # Add station to route
     add_station_to_route(global)
   when 5 # Remove station from route
     remove_station_from_route(global)
   when 6 # Set route to train
     set_route_to_train(global)
-  when 7  # Add coach to train
+  when 7 # Add coach to train
     add_coach_to_train(global)
   when 8 # Train R334 should leave coach
     train_leave_coach(global)
   when 9 # Train R334 should go to next station
-         # Train R334 should go to previous station
+    # Train R334 should go to previous station
     train_went_station(global)
   when 10 # Occupy coach space
     occupy_coach_space(global)

@@ -1,9 +1,14 @@
+# frozen_string_literal: true
+
+# Instance counter to save instances
+# inside off class variables
 module InstanceCounter
   def self.included(base)
     base.extend(ClassMethods)
     base.send :include, InstanceMethods
   end
 
+  # to be class methods
   module ClassMethods
     @@all = {}
 
@@ -20,13 +25,13 @@ module InstanceCounter
     end
 
     def instances_number
-      self.all.keys.size
+      all.keys.size
     end
   end
 
   module InstanceMethods
     def register_instance
-      self.class.all[self.name]=self
+      self.class.all[name] = self
     end
   end
 end

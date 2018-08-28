@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Класс Route (Маршрут):
 #
 # Имеет начальную и конечную станцию, а также список промежуточных станций. Начальная и конечная станции указываютсся при создании маршрута, а промежуточные могут добавляться между ними.
@@ -8,17 +10,17 @@
 class Route
   attr_reader :stations
 
-  def initialize(first_station, last_station, intermediate_stations = nil)
+  def initialize(first_station, last_station, other_stations = nil)
     @stations = [first_station, last_station]
 
-    add_stations(intermediate_stations) if intermediate_stations
+    add_stations(other_stations) if other_stations
 
     validate!
   end
 
   #  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
   # Validation methods
-  def valide?
+  def valid?
     validate!
   rescue StandardError
     false
@@ -29,14 +31,14 @@ class Route
   def validate!
     # @stations was filled and all
     # elements should be Stations
-    if !stations.empty?
+    unless stations.empty?
       stations.each do |is|
-        fail 'All stations should be Station class.' unless is.is_a?(Station)
+        raise 'All stations should be Station class.' unless is.is_a?(Station)
       end
     end
 
     # Stations in route should be uniq
-    fail 'Some stations are added to route few times.' if stations.size != stations.uniq.size
+    raise 'Some stations are added to route few times.' if stations.size != stations.uniq.size
   end
   #
   #  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
@@ -45,14 +47,14 @@ class Route
     # Don't add same stations twice.
     already_added_stations = stations_arg & stations
     unless already_added_stations.empty?
-      fail "Stations #{already_added_stations.map{|s| s.name}.join('", "')} were already added."
+      raise "Stations #{already_added_stations.map(&:name).join('", "')} were already added."
     end
 
     stations.insert(-1, *stations_arg)
   end
 
   def remove_station(station)
-    fail "Station '#{station.name}' is absent in Route." unless station_index(station)
+    raise "Station '#{station.name}' is absent in Route." unless station_index(station)
 
     stations.delete(station)
   end

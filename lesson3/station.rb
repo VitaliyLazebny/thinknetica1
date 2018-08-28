@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Класс Station (Станция):
 #
 # Имеет название, которое указывается при ее создании
@@ -28,7 +30,7 @@ class Station
 
   # -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
   # Validation methods
-  def valide?
+  def valid?
     validate!
   rescue StandardError
     false
@@ -38,10 +40,10 @@ class Station
 
   def validate!
     # Name should be String longer then 3 symbols.
-    fail 'Name should be String longer then 3 symbols.' if !@name.is_a?(String) || @name.size < 3
+    raise 'Name should be String longer then 3 symbols.' if !@name.is_a?(String) || @name.size < 3
 
     # Station with given name already exist
-    fail 'Station with given name already exist.' if self.class.find(@name)
+    raise 'Station with given name already exist.' if self.class.find(@name)
   end
   # -   -   -   -   -   -   -   -   -
 

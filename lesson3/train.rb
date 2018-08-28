@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Класс Train (Поезд):
 # Имеет номер (произвольная строка) и тип (грузовой, пассажирский) и количество вагонов, эти данные указываются при создании экземпляра класса
 # Может набирать скорость
@@ -42,7 +44,7 @@ class Train
 
   # -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
   # Validation methods
-  def valide?
+  def valid?
     validate!
   rescue StandardError
     false
@@ -52,16 +54,16 @@ class Train
 
   def validate!
     # name should be String.
-    fail 'Name should be text string.' unless @name.is_a?(String)
+    raise 'Name should be text string.' unless @name.is_a?(String)
 
     # Name should be:
     # 3 word characters +
     # optional bar      +
     # 2 word characters
-    fail 'Incorrect name format.' unless @name[/^[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}$/]
+    raise 'Incorrect name format.' unless @name[/^[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}$/]
 
     # Train with given name already exist
-    fail 'Train with given name already exist.' if self.class.find(@name)
+    raise 'Train with given name already exist.' if self.class.find(@name)
   end
   # -   -   -   -   -   -   -   -   -
 
@@ -72,7 +74,7 @@ class Train
     @speed += 1
   end
 
-  def decrase_speed
+  def decrease_speed
     @speed -= 1
   end
   # -   -   -   -   -   -   -   -   -
@@ -81,13 +83,13 @@ class Train
   # Coaches section
   #
   def add_coach(coach)
-    fail 'Wrong coach type' if type != coach.type
+    raise 'Wrong coach type' if type != coach.type
 
     @coaches.push(coach)
   end
 
   def leave_coach
-    fail 'No coaches left.' if size.zero?
+    raise 'No coaches left.' if size.zero?
 
     @coaches.pop
   end
@@ -100,7 +102,7 @@ class Train
   end
 
   def go_to_next_station
-    next_station    = @route.next_station(current_station)
+    next_station = @route.next_station(current_station)
     @current_station.send_train self
 
     @current_station = next_station
@@ -111,7 +113,7 @@ class Train
     @current_station.send_train self
 
     previous_station = @route.previous_station(current_station)
-    @current_station  = previous_station
+    @current_station = previous_station
 
     @current_station.accept_train self
   end
