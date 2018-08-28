@@ -246,24 +246,27 @@ end
 
 def occupy_coach_space(global)
   puts "Trains list:"
-  Train.all.each_with_index do |train, index|
-    puts "#{index}. #{train}."
+  global[:trains].each_with_index do |train, index|
+    puts "#{index}. #{train}"
   end
 
   puts "Please choose train:"
   train_number = gets.chomp.to_i
-  fail 'Invalid train selected.' if train_number < 0 || train_number > Train.all.size - 1
+  fail 'Invalid train selected.' if train_number < 0 || train_number > global[:trains].size - 1
 
-  train = Train.all[train_number]
+  train = global[:trains][train_number]
 
   puts 'Coaches list:'
   train.each_coach_with_index do |index, coach|
     puts "#{index}. #{coach}."
   end
+
+  fail 'Train has no coaches.' if train.size.zero?
+
   puts 'Please select the coach:'
   coach_number = gets.chomp.to_i
 
-  fail 'Invalid train selected.' if train_number < 0 || train_number > train.size - 1
+  fail 'Invalid coach selected.' if coach_number < 0 || coach_number > train.size - 1
   coach = train.coaches[coach_number]
 
   if coach.type == 'cargo'
@@ -275,6 +278,8 @@ def occupy_coach_space(global)
 rescue => ex
   puts "Error: #{ex.message}"
   retry
+else
+  puts "Coach space was successfully occupied."
 end
 
 def list_stations(global)
