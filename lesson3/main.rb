@@ -39,8 +39,9 @@ loop do
   puts ' 7. Add coach'
   puts ' 8. Remove coach from train'
   puts ' 9. Move train'
-  puts '10. List stations and trains on station'
-  puts "11. Exit from programm\n\n"
+  puts '10. Occupy coach space'
+  puts '11. List stations and trains on station'
+  puts "12. Exit from programm\n\n"
 
   command = gets.chomp.to_i
 
@@ -64,9 +65,11 @@ loop do
   when 9 # Train R334 should go to next station
          # Train R334 should go to previous station
     train_went_station(global)
-  when 10 # List stations and trains on station
+  when 10 # Occupy coach space
+    occupy_coach_space(global)
+  when 11 # List stations and trains on station
     list_stations(global)
-  when 11 # Stop
+  when 12 # Stop
     stop_executing(global)
   else
     unknown_command(global)

@@ -93,6 +93,7 @@ else
 end # add_station_to_route(global)
 
 def remove_station_from_route(global)
+  fail 'No routes added to system' if global[:routes].size < 1
   puts 'Routes list:'
   global[:routes].each_with_index do |route, index|
     puts "#{index}. #{route.name}"
@@ -121,6 +122,7 @@ else
 end # remove_station_from_route(global)
 
 def set_route_to_train(global)
+  fail "There's no trains created."   if Train.all.size.zero?
   fail "There's no routes to assign." if global[:routes].size < 1
 
   puts 'Routes list:'
@@ -148,7 +150,9 @@ else
   puts "Route #{global[:routes][route].name} was set to #{global[:trains][train].name} "
 end
 
-def add_coach_to_train
+def add_coach_to_train(global)
+  fail "There's no trains created." if Train.all.size.zero?
+
   puts 'Trains list:'
   global[:trains].each_with_index do |train, index|
     puts "#{index}. #{train.name}"
@@ -156,22 +160,33 @@ def add_coach_to_train
 
   puts 'Please enter train number:'
   train   = gets.chomp.to_i
-  fail "Route #{train} doesn't exist." if train < 0 || train > global[:trains].size - 1
+  fail "Train #{train} doesn't exist." if train < 0 || train > global[:trains].size - 1
 
   train = global[:trains][train]
 
   coach = if train.type == 'cargo'
-            CargoCoach.new
+            puts 'Please enter volume amount:'
+            volume = gets.chomp
+
+            fail 'Volume should be Integer.'          if     volume.to_i.to_s != volume
+            fail 'Volume should be larger then zero.' unless volume.to_i > 0
+
+            volume = volume.to_i
+            CargoCoach.new(volume)
           else
-            puts 'Please enter number of places:'
+            puts 'Please enter places number:'
             places = gets.chomp.to_i
 
+            fail 'Places number should be Integer.'          if places.to_i.to_s == volume
+            fail 'Places number should be bigger then zero.' unless places.to_i > 0
+
+            places = places.to_i
             PassengerCoach.new(places)
           end
 
   global[:coaches].push coach
 rescue => ex
-  puts "Error: #{ex.message}"
+  puts "Error: #{ex.message}, #{ex.backtrace}"
   retry
 else
   train.add_coach(coach)
@@ -179,6 +194,8 @@ else
 end
 
 def train_leave_coach(global)
+  fail "There's no trains created." if Train.all.size.zero?
+
   puts 'Trains list:'
   global[:trains].each_with_index do |train, index|
     puts "#{index}. #{train.name}"
@@ -198,6 +215,8 @@ else
 end
 
 def train_went_station(global)
+  fail "There's no trains created." if Train.all.size.zero?
+
   puts 'Trains list:'
   global[:trains].each_with_index do |train, index|
     puts "#{index}. #{train.name}"
@@ -225,6 +244,39 @@ def train_went_station(global)
   puts "Train #{train.name} changed location to #{direction == 1 ? 'next' : 'previous'} station."
 end
 
+def occupy_coach_space(global)
+  puts "Trains list:"
+  Train.all.each_with_index do |train, index|
+    puts "#{index}. #{train}."
+  end
+
+  puts "Please choose train:"
+  train_number = gets.chomp.to_i
+  fail 'Invalid train selected.' if train_number < 0 || train_number > Train.all.size - 1
+
+  train = Train.all[train_number]
+
+  puts 'Coaches list:'
+  train.each_coach_with_index do |index, coach|
+    puts "#{index}. #{coach}."
+  end
+  puts 'Please select the coach:'
+  coach_number = gets.chomp.to_i
+
+  fail 'Invalid train selected.' if train_number < 0 || train_number > train.size - 1
+  coach = train.coaches[coach_number]
+
+  if coach.type == 'cargo'
+    coach.occupy_volume
+  else
+    coach.occupy_place
+  end
+
+rescue => ex
+  puts "Error: #{ex.message}"
+  retry
+end
+
 def list_stations(global)
   if global[:stations].size > 0
     puts 'List of stations:'
@@ -242,8 +294,12 @@ def list_stations(global)
 
   if global[:stations][station].trains.size > 0
     puts 'List of trains on station:'
-    global[:stations][station].trains.each_with_index do |station, index|
-      puts "#{index}. #{station.name}"
+    global[:stations][station].each_train_with_index do |index_t, train|
+      puts "#{index_t}. #{train.name}"
+      puts "List of Coaches:"
+      train.each_coach_with_index do |index_c, coach|
+        puts "#{index}. #{coach_c}"
+      end
     end
     puts '...All trains from chosen station were displayed.'
   else
