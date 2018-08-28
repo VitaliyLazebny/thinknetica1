@@ -20,7 +20,7 @@ class Route
   # Validation methods
   def valide?
     validate!
-  rescue
+  rescue StandardError
     false
   else
     true

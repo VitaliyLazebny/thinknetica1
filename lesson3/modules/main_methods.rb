@@ -4,7 +4,7 @@ def create_station(global)
   station_name = gets.chomp
 
   station = Station.new(station_name)
-rescue => ex
+rescue StandardError => ex
   puts "Error: #{ex.message}"
   retry
 else
@@ -28,8 +28,7 @@ def create_train(global)
   else # passenger
     train = PassengerTrain.new(name)
   end
-
-rescue => ex
+rescue StandardError => ex
   puts "Error: #{ex.message}"
   retry
 else
@@ -54,7 +53,7 @@ def create_route(global)
   fail "Station doesn't exists." if last_station < 0 || last_station > global[:stations].size - 1
 
   fail "Route can't be started and ended with the same station." if first_station == last_station
-rescue => ex
+rescue StandardError => ex
   puts "Error: #{ex.message}"
   retry
 else
@@ -84,7 +83,7 @@ def add_station_to_route(global)
   fail "Route #{station} doesn't exist." if station < 0 || station > global[:stations].size - 1
   fail "Route #{global[:routes][route].name} already contains " +
            "Station #{global[:stations][station].name}" if global[:routes][route].stations.include? global[:stations][station]
-rescue => ex
+rescue StandardError => ex
   puts "Error: #{ex.message}"
   retry
 else
@@ -113,7 +112,7 @@ def remove_station_from_route(global)
   puts 'Please enter station number:'
   station = gets.chomp.to_i
   fail "Station #{station} absent in this route." if station < 0 || station > global[:routes][route].stations.size - 1
-rescue => ex
+rescue StandardError => ex
   puts "Error: #{ex.message}"
   retry
 else
@@ -142,7 +141,7 @@ def set_route_to_train(global)
   puts 'Please enter train number:'
   train   = gets.chomp.to_i
   fail "Route #{train} doesn't exist." if train < 0 || train > global[:trains].size - 1
-rescue => ex
+rescue StandardError => ex
   puts "Error: #{ex.message}"
   retry
 else
@@ -185,7 +184,7 @@ def add_coach_to_train(global)
           end
 
   global[:coaches].push coach
-rescue => ex
+rescue StandardError => ex
   puts "Error: #{ex.message}, #{ex.backtrace}"
   retry
 else
@@ -206,7 +205,7 @@ def train_leave_coach(global)
   fail "Route '#{train}' doesn't exist." if train < 0 || train > global[:trains].size - 1
 
   train = global[:trains][train]
-rescue => ex
+rescue StandardError => ex
   puts "Error: #{ex.message}"
   retry
 else
@@ -274,8 +273,7 @@ def occupy_coach_space(global)
   else
     coach.occupy_place
   end
-
-rescue => ex
+rescue StandardError => ex
   puts "Error: #{ex.message}"
   retry
 else
@@ -301,27 +299,26 @@ def list_stations(global)
     puts 'List of trains on station:'
     global[:stations][station].each_train_with_index do |index_t, train|
       puts "#{index_t}. #{train.name}"
-      puts "List of Coaches:"
+      puts 'List of Coaches:'
       train.each_coach_with_index do |index_c, coach|
-        puts "#{index}. #{coach_c}"
+        puts "#{coach}. #{index_c}"
       end
     end
     puts '...All trains from chosen station were displayed.'
   else
     puts "There's no trains on this station."
   end
-
-rescue => ex
+rescue StandardError => ex
   puts "Error: #{ex.message}"
   retry
 end
 
-def stop_executing(global)
+def stop_executing(_global)
   puts 'Exiting from program.'
   exit
 end
 
-def unknown_command(global)
+def unknown_command(_global)
   puts 'Was entered unknown command.'
   puts "Can't parse it.\n\n\n\n\n"
 end
