@@ -1,15 +1,16 @@
-#
-#
-#
+# frozen_string_literal: true
+
 require_relative 'coach'
 
+# Cargo coach
+#
 class CargoCoach < Coach
   attr_reader :total_volume
   attr_reader :occupied_volume
 
   def initialize(total)
-    unless total.is_a?(Integer) && total > 0
-      fail 'Total volume should be integer bigger then 0.'
+    unless total.is_a?(Integer) && total.positive?
+      raise 'Total volume should be integer bigger then 0.'
     end
 
     @total_volume    = total
@@ -21,12 +22,14 @@ class CargoCoach < Coach
   end
 
   def occupy_volume
-    fail 'All places was already ocupied.' if available_volume.zero?
+    raise 'All places was already occupied.' if available_volume.zero?
 
     @occupied_volume += 1
   end
 
   def to_s
-    "Type: #{type}. Available volume: #{available_volume}. Ocupied volume: #{occupied_volume}"
+    "Type: #{type}. " \
+      "Available volume: #{available_volume}. " \
+      "Occupied volume: #{occupied_volume}"
   end
 end

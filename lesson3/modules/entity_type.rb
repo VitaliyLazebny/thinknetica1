@@ -1,4 +1,5 @@
-#
+# frozen_string_literal: true
+
 # Get Type from class name
 #
 module EntityType

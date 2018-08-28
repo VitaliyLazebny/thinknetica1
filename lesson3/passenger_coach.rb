@@ -1,13 +1,12 @@
-#
-#
-#
+# frozen_string_literal: true
+
 class PassengerCoach < Coach
   attr_reader :total_places
   attr_reader :occupied_places
 
   def initialize(total)
     unless total.is_a?(Integer) && total > 0
-      fail 'Total number of places should be integer bigger then 0.'
+      raise 'Total number of places should be integer bigger then 0.'
     end
 
     @total_places    = total
@@ -19,12 +18,12 @@ class PassengerCoach < Coach
   end
 
   def occupy_place
-    fail 'All places was already ocupied.' if available_places.zero?
+    raise 'All places was already occupied.' if available_places.zero?
 
     @occupied_places += 1
   end
 
   def to_s
-    "Type: #{type}. Available places: #{available_places}. Ocupied places: #{occupied_places}"
+    "Type: #{type}. Available places: #{available_places}. Occupied places: #{occupied_places}"
   end
 end
