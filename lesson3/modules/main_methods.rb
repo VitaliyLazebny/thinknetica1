@@ -1,5 +1,18 @@
 # frozen_string_literal: true
 
+def show_commands_list(_global)
+  list = ['Please enter command code (1-11):', ' 1. Create station',
+          ' 2. Create train', ' 3. Create route',
+          ' 4. Add station to route', ' 5. Remove station',
+          ' 6. Set route', ' 7. Add coach', ' 8. Remove coach from train',
+          ' 9. Move train', '10. Occupy coach space',
+          '11. List stations and trains on station',
+          '12. Exit from program']
+
+  puts list.join("\n")
+  puts "\n\n\n"
+end
+
 def create_station(global)
   puts 'Please enter station name:'
   puts '(case sensitive)'
@@ -12,7 +25,7 @@ rescue StandardError => ex
 else
   global[:stations].push station
   puts "Station '#{station_name}' was created."
-end # create_station(global)
+end
 
 def create_train(global)
   puts 'Please enter train name:'
@@ -30,16 +43,18 @@ def create_train(global)
           else # passenger
             PassengerTrain.new(name)
           end
+
+  global[:trains].push train
+  puts "Train '#{train.name}' was created."
 rescue StandardError => ex
   puts "Error: #{ex.message}"
   retry
-else
-  global[:trains].push train
-  puts "Train '#{train.name}' was created."
-end # create_train(global)
+end
 
 def create_route(global)
-  raise "Route can be created only if there's 2 or more stations." if global[:stations].size < 2
+  if global[:stations].size < 2
+    raise "Route can be created only if there's 2 or more stations."
+  end
 
   puts 'List of stations:'
   global[:stations].each_with_index do |station, index|
@@ -48,20 +63,28 @@ def create_route(global)
 
   puts 'Please enter first station number:'
   first_station = gets.chomp.to_i
-  raise "Station doesn't exists." if first_station < 0 || first_station > global[:stations].size - 1
+  if first_station.negative? || first_station > global[:stations].size - 1
+    raise "Station doesn't exists."
+  end
 
   puts 'Please enter last station number:'
   last_station = gets.chomp.to_i
-  raise "Station doesn't exists." if last_station < 0 || last_station > global[:stations].size - 1
+  if last_station.negative? || last_station > global[:stations].size - 1
+    raise "Station doesn't exists."
+  end
 
-  raise "Route can't be started and ended with the same station." if first_station == last_station
+  if first_station == last_station
+    raise 'Route can\'t be started and ended with the same station.'
+  end
+
+  global[:routes].push(
+    Route.new(global[:stations][first_station], global[:stations][last_station])
+  )
+  puts "Route #{global[:routes].last.name} was created."
 rescue StandardError => ex
   puts "Error: #{ex.message}"
   retry
-else
-  global[:routes].push Route.new(global[:stations][first_station], global[:stations][last_station])
-  puts "Route #{global[:routes].last.name} was created."
-end # create_route(global)
+end
 
 def add_station_to_route(global)
   raise 'No routes added to system' if global[:routes].empty?
@@ -73,7 +96,9 @@ def add_station_to_route(global)
 
   puts 'Please enter route number:'
   route = gets.chomp.to_i
-  raise "Route #{route} doesn't exist." if route < 0 || route > global[:routes].size - 1
+  if route.negative? || route > global[:routes].size - 1
+    raise "Route #{route} doesn't exist."
+  end
 
   puts 'List of stations:'
   global[:stations].each_with_index do |station, index|
@@ -82,18 +107,21 @@ def add_station_to_route(global)
 
   puts 'Please enter station number:'
   station = gets.chomp.to_i
-  raise "Route #{station} doesn't exist." if station < 0 || station > global[:stations].size - 1
-  if global[:routes][route].stations.include? global[:stations][station]
-    raise "Route #{global[:routes][route].name} already contains " \
-         "Station #{global[:stations][station].name}"
+  if station.negative? || station > global[:stations].size - 1
+    raise "Route #{station} doesn't exist."
   end
+
+  if global[:routes][route].stations.include? global[:stations][station]
+    raise "Route #{global[:routes][route].name} already contains "\
+          "Station #{global[:stations][station].name}"
+  end
+
+  global[:routes][route].add_stations [global[:stations][station]]
+  puts 'Station was successfully added to Route.'
 rescue StandardError => ex
   puts "Error: #{ex.message}"
   retry
-else
-  global[:routes][route].add_stations [global[:stations][station]]
-  puts 'Station was successfully added to Route.'
-end # add_station_to_route(global)
+end
 
 def remove_station_from_route(global)
   raise 'No routes added to system' if global[:routes].empty?
@@ -104,7 +132,10 @@ def remove_station_from_route(global)
 
   puts 'Please enter route number:'
   route = gets.chomp.to_i
-  raise "Route #{route} doesn't exist." if route < 0 || route > global[:routes].size - 1
+  if route.negative? || route > global[:routes].size - 1
+    raise "Route #{route} doesn't exist."
+  end
+
   if global[:routes][route].stations.size < 3
     raise "Station can't be removed since" \
          ' route contains only 2 station (first and last).'
@@ -117,16 +148,20 @@ def remove_station_from_route(global)
 
   puts 'Please enter station number:'
   station = gets.chomp.to_i
-  raise "Station #{station} absent in this route." if station < 0 || station > global[:routes][route].stations.size - 1
+  if station.negative? || station > global[:routes][route].stations.size - 1
+    raise "Station #{station} absent in this route."
+  end
+
+  global[:routes][route].remove_station global[:routes][route].stations[station]
+  puts "Station #{global[:stations][station].name} "\
+       "from route #{global[:routes][route].name} "\
+       'was successfully removed.'
 rescue StandardError => ex
   puts "Error: #{ex.message}"
   retry
-else
-  global[:routes][route].remove_station global[:routes][route].stations[station]
-  puts "Station #{global[:stations][station].name} from route #{global[:routes][route].name} was successfully removed."
-end # remove_station_from_route(global)
+end
 
-def set_route_to_train(global)
+def route_for_train(global)
   raise "There's no trains created."   if Train.all.size.zero?
   raise "There's no routes to assign." if global[:routes].empty?
 
@@ -137,7 +172,9 @@ def set_route_to_train(global)
 
   puts 'Please enter route number:'
   route = gets.chomp.to_i
-  raise "Route #{route} doesn't exist." if route < 0 || route > global[:routes].size - 1
+  if route.negative? || route > global[:routes].size - 1
+    raise "Route #{route} doesn't exist."
+  end
 
   puts 'Trains list:'
   global[:trains].each_with_index do |train, index|
@@ -146,13 +183,16 @@ def set_route_to_train(global)
 
   puts 'Please enter train number:'
   train = gets.chomp.to_i
-  raise "Route #{train} doesn't exist." if train < 0 || train > global[:trains].size - 1
+  if train.negative? || train > global[:trains].size - 1
+    raise "Route #{train} doesn't exist."
+  end
+
+  global[:trains][train].route = global[:routes][route]
+  puts "Route #{global[:routes][route].name} was"\
+       " set to #{global[:trains][train].name} "
 rescue StandardError => ex
   puts "Error: #{ex.message}"
   retry
-else
-  global[:trains][train].set_route global[:routes][route]
-  puts "Route #{global[:routes][route].name} was set to #{global[:trains][train].name} "
 end
 
 def add_coach_to_train(global)
@@ -165,7 +205,9 @@ def add_coach_to_train(global)
 
   puts 'Please enter train number:'
   train = gets.chomp.to_i
-  raise "Train #{train} doesn't exist." if train < 0 || train > global[:trains].size - 1
+  if train.negative? || train > global[:trains].size - 1
+    raise "Train #{train} doesn't exist."
+  end
 
   train = global[:trains][train]
 
@@ -173,8 +215,11 @@ def add_coach_to_train(global)
             puts 'Please enter volume amount:'
             volume = gets.chomp
 
-            raise 'Volume should be Integer.'          if     volume.to_i.to_s != volume
-            raise 'Volume should be larger then zero.' unless volume.to_i > 0
+            raise 'Volume should be Integer.' unless volume.to_i.to_s == volume
+
+            unless volume.to_i.positive?
+              raise 'Volume should be larger then zero.'
+            end
 
             volume = volume.to_i
             CargoCoach.new(volume)
@@ -182,20 +227,24 @@ def add_coach_to_train(global)
             puts 'Please enter places number:'
             places = gets.chomp.to_i
 
-            raise 'Places number should be Integer.'          if     places.to_i.to_s == places
-            raise 'Places number should be bigger then zero.' unless places.to_i > 0
+            if places.to_i.to_s == places
+              raise 'Places number should be Integer.'
+            end
+            unless places.to_i.positive?
+              raise 'Places number should be positive.'
+            end
 
             places = places.to_i
             PassengerCoach.new(places)
           end
 
   global[:coaches].push coach
+
+  train.add_coach(coach)
+  puts "Coach was successfully added to train #{train.name}."
 rescue StandardError => ex
   puts "Error: #{ex.message}, #{ex.backtrace}"
   retry
-else
-  train.add_coach(coach)
-  puts "Coach was successfully added to train #{train.name}."
 end
 
 def train_leave_coach(global)
@@ -208,15 +257,17 @@ def train_leave_coach(global)
 
   puts 'Please enter train number:'
   train = gets.chomp.to_i
-  raise "Route '#{train}' doesn't exist." if train < 0 || train > global[:trains].size - 1
+  if train.negative? || train > global[:trains].size - 1
+    raise "Route '#{train}' doesn't exist."
+  end
 
   train = global[:trains][train]
+
+  train.leave_coach
+  puts "Coach was successfully leaved by train #{train.name}."
 rescue StandardError => ex
   puts "Error: #{ex.message}"
   retry
-else
-  train.leave_coach
-  puts "Coach was successfully leaved by train #{train.name}."
 end
 
 def train_went_station(global)
@@ -229,10 +280,14 @@ def train_went_station(global)
 
   puts 'Please enter train number:'
   train = gets.chomp.to_i
-  raise "Route #{train} doesn't exist." if train < 0 || train > global[:trains].size - 1
+  if train.negative? || train > global[:trains].size - 1
+    raise "Route #{train} doesn't exist."
+  end
 
   train = global[:trains][train]
-  raise "Train #{train.name} doesn't have assigned route and station." if train.route.nil? || train.current_station.nil?
+  unless train.route && train.current_station
+    raise "Train #{train.name} doesn't have assigned route and station."
+  end
 
   puts 'Directions:'
   puts '1. Next station'
@@ -246,7 +301,8 @@ def train_went_station(global)
   else
     train.go_to_previous_station
   end
-  puts "Train #{train.name} changed location to #{direction == 1 ? 'next' : 'previous'} station."
+  puts "Train #{train.name} changed location to"\
+       "#{direction == 1 ? 'next' : 'previous'} station."
 end
 
 def occupy_coach_space(global)
@@ -257,7 +313,9 @@ def occupy_coach_space(global)
 
   puts 'Please choose train:'
   train_number = gets.chomp.to_i
-  raise 'Invalid train selected.' if train_number < 0 || train_number > global[:trains].size - 1
+  if train_number.negative? || train_number > global[:trains].size - 1
+    raise 'Invalid train selected.'
+  end
 
   train = global[:trains][train_number]
 
@@ -271,7 +329,9 @@ def occupy_coach_space(global)
   puts 'Please select the coach:'
   coach_number = gets.chomp.to_i
 
-  raise 'Invalid coach selected.' if coach_number < 0 || coach_number > train.size - 1
+  if coach_number.negative? || coach_number > train.size - 1
+    raise 'Invalid coach selected.'
+  end
   coach = train.coaches[coach_number]
 
   if coach.type == 'cargo'
@@ -279,11 +339,11 @@ def occupy_coach_space(global)
   else
     coach.occupy_place
   end
+
+  puts 'Coach space was successfully occupied.'
 rescue StandardError => ex
   puts "Error: #{ex.message}"
   retry
-else
-  puts 'Coach space was successfully occupied.'
 end
 
 def list_stations(global)
@@ -299,7 +359,11 @@ def list_stations(global)
 
   puts 'Please enter station number:'
   station = gets.chomp.to_i
-  raise "Station #{station} doesn't exist." if station < 0 || station > global[:stations].size - 1
+  if station.negative? ||
+     station > global[:stations].size - 1
+
+    raise "Station #{station} doesn't exist."
+  end
 
   if !global[:stations][station].trains.empty?
     puts 'List of trains on station:'

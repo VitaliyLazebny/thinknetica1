@@ -1,13 +1,9 @@
 # frozen_string_literal: true
 
-# Класс Route (Маршрут):
-#
-# Имеет начальную и конечную станцию, а также список промежуточных станций. Начальная и конечная станции указываютсся при создании маршрута, а промежуточные могут добавляться между ними.
-# Может добавлять промежуточную станцию в список
-# Может удалять промежуточную станцию из списка
-# Может выводить список всех станций по-порядку от начальной до конечной
-#
+# Route
 class Route
+  ERROR_FEW_TIMES_USED = 'Some stations are added to route few times.'
+
   attr_reader :stations
 
   def initialize(first_station, last_station, other_stations = nil)
@@ -38,7 +34,7 @@ class Route
     end
 
     # Stations in route should be uniq
-    raise 'Some stations are added to route few times.' if stations.size != stations.uniq.size
+    raise ERROR_FEW_TIMES_USED unless stations.size == stations.uniq.size
   end
   #
   #  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
@@ -47,14 +43,18 @@ class Route
     # Don't add same stations twice.
     already_added_stations = stations_arg & stations
     unless already_added_stations.empty?
-      raise "Stations #{already_added_stations.map(&:name).join('", "')} were already added."
+      raise 'Stations ' +
+            already_added_stations.map(&:name).join('", "') +
+            'were already added.'
     end
 
     stations.insert(-1, *stations_arg)
   end
 
   def remove_station(station)
-    raise "Station '#{station.name}' is absent in Route." unless station_index(station)
+    unless station_index(station)
+      raise "Station '#{station.name}' is absent in Route."
+    end
 
     stations.delete(station)
   end

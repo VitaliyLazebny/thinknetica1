@@ -3,7 +3,6 @@
 require_relative 'coach'
 
 # Cargo coach
-#
 class CargoCoach < Coach
   attr_reader :total_volume
   attr_reader :occupied_volume
