@@ -1,21 +1,10 @@
 # frozen_string_literal: true
 
-# Класс Train (Поезд):
-# Имеет номер (произвольная строка) и тип (грузовой, пассажирский) и количество вагонов, эти данные указываются при создании экземпляра класса
-# Может набирать скорость
-# Может возвращать текущую скорость
-# Может тормозить (сбрасывать скорость до нуля)
-# Может возвращать количество вагонов
-# Может прицеплять/отцеплять вагоны (по одному вагону за операцию, метод просто увеличивает или уменьшает количество вагонов). Прицепка/отцепка вагонов может осуществляться только если поезд не движется.
-# Может принимать маршрут следования (объект класса Route).
-# При назначении маршрута поезду, поезд автоматически помещается на первую станцию в маршруте.
-# Может перемещаться между станциями, указанными в маршруте. Перемещение возможно вперед и назад, но только на 1 станцию за раз.
-# Возвращать предыдущую станцию, текущую, следующую, на основе маршрута
-
 require_relative 'modules/entity_type'
 require_relative 'modules/manufacturer'
 require_relative 'modules/instance_counter'
 
+# Train
 class Train
   include EntityType
   include Manufacturer
@@ -31,7 +20,7 @@ class Train
   alias number name
 
   def initialize(name)
-    @name            = name
+    @name = name
     @coaches         = []
     @speed           = 0
     @route           = nil
@@ -60,7 +49,9 @@ class Train
     # 3 word characters +
     # optional bar      +
     # 2 word characters
-    raise 'Incorrect name format.' unless @name[/^[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}$/]
+    unless @name[/^[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}$/]
+      raise 'Incorrect name format.'
+    end
 
     # Train with given name already exist
     raise 'Train with given name already exist.' if self.class.find(@name)
@@ -95,7 +86,7 @@ class Train
   end
   # -  -  -  -  -  -  -  -  -  -  -  -  -
 
-  def set_route(route)
+  def route=(route)
     @route           = route
     @current_station = route.first
     @current_station.accept_train self

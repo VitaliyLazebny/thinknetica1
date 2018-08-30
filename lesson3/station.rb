@@ -1,16 +1,9 @@
 # frozen_string_literal: true
 
-# Класс Station (Станция):
-#
-# Имеет название, которое указывается при ее создании
-# Может принимать поезда (по одному за раз)
-# Может возвращать список всех поездов на станции, находящиеся в текущий момент
-# Может возвращать список поездов на станции по типу (см. ниже): кол-во грузовых, пассажирских
-# Может отправлять поезда (по одному за раз, при этом, поезд удаляется из списка поездов, находящихся на станции).
-#
-
+# class Station
 require_relative 'modules/instance_counter'
 
+# Station
 class Station
   include InstanceCounter
 
@@ -20,7 +13,7 @@ class Station
   alias id name
 
   def initialize(name)
-    @name   = name
+    @name = name
     @trains = []
 
     validate!
@@ -28,7 +21,7 @@ class Station
     register_instance
   end
 
-  # -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+  # -   -   -   -   -   -   -   -   -   -
   # Validation methods
   def valid?
     validate!
@@ -40,7 +33,9 @@ class Station
 
   def validate!
     # Name should be String longer then 3 symbols.
-    raise 'Name should be String longer then 3 symbols.' if !@name.is_a?(String) || @name.size < 3
+    if !@name.is_a?(String) || @name.size < 3
+      raise 'Name should be String longer then 3 symbols.'
+    end
 
     # Station with given name already exist
     raise 'Station with given name already exist.' if self.class.find(@name)

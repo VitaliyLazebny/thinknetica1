@@ -10,14 +10,12 @@ module InstanceCounter
 
   # to be class methods
   module ClassMethods
-    @@all = {}
-
     def all
-      @@all
+      @@all ||= {}
     end
 
     def find(name)
-      @@all[name]
+      all[name]
     end
 
     def instances
@@ -29,6 +27,7 @@ module InstanceCounter
     end
   end
 
+  # InstanceMethods
   module InstanceMethods
     def register_instance
       self.class.all[name] = self
