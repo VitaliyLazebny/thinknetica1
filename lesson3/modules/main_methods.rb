@@ -27,7 +27,7 @@ else
   puts "Station '#{station_name}' was created."
 end
 
-def create_train(global)
+def ask_train_data
   puts 'Please enter train name:'
   puts '(case sensitive)'
   name = gets.chomp
@@ -38,11 +38,13 @@ def create_train(global)
   type = gets.chomp.to_i
   raise 'Incorrect train type was entered.' unless [1, 2].include? type
 
-  train = if type == 1 # cargo
-            CargoTrain.new(name)
-          else # passenger
-            PassengerTrain.new(name)
-          end
+  [name, type]
+end
+
+def create_train(global)
+  name, type = ask_train_data
+
+  train = type == 1 ? CargoTrain.new(name) : PassengerTrain.new(name)
 
   global[:trains].push train
   puts "Train '#{train.name}' was created."
@@ -51,35 +53,51 @@ rescue StandardError => ex
   retry
 end
 
-def create_route(global)
-  if global[:stations].size < 2
-    raise "Route can be created only if there's 2 or more stations."
+def ask_station(global)
+  station = gets.chomp.to_i
+  if station.negative? || station > global[:stations].size - 1
+    raise "Station doesn't exists."
+  end
+
+  global[:stations][station]
+end
+
+def display_stations(global)
+  if global[:stations].empty?
+    puts "There's no Stations created."
+    return
   end
 
   puts 'List of stations:'
   global[:stations].each_with_index do |station, index|
     puts "#{index}. #{station.name}"
   end
+end
+
+def ask_route_data(global)
+  if global[:stations].size < 2
+    raise "Route can be created only if there's 2 or more stations."
+  end
+
+  display_stations(global)
 
   puts 'Please enter first station number:'
-  first_station = gets.chomp.to_i
-  if first_station.negative? || first_station > global[:stations].size - 1
-    raise "Station doesn't exists."
-  end
+  first_station = ask_station(global)
 
   puts 'Please enter last station number:'
-  last_station = gets.chomp.to_i
-  if last_station.negative? || last_station > global[:stations].size - 1
-    raise "Station doesn't exists."
-  end
+  last_station = ask_station(global)
 
   if first_station == last_station
     raise 'Route can\'t be started and ended with the same station.'
   end
 
-  global[:routes].push(
-    Route.new(global[:stations][first_station], global[:stations][last_station])
-  )
+  [first_station, last_station]
+end
+
+def create_route(global)
+  stations = ask_route_data(global)
+
+  global[:routes].push(*Route.new(stations))
   puts "Route #{global[:routes].last.name} was created."
 rescue StandardError => ex
   puts "Error: #{ex.message}"
@@ -100,16 +118,10 @@ def add_station_to_route(global)
     raise "Route #{route} doesn't exist."
   end
 
-  puts 'List of stations:'
-  global[:stations].each_with_index do |station, index|
-    puts "#{index}. #{station.name}"
-  end
+  display_stations(global)
 
   puts 'Please enter station number:'
-  station = gets.chomp.to_i
-  if station.negative? || station > global[:stations].size - 1
-    raise "Route #{station} doesn't exist."
-  end
+  ask_station(global)
 
   if global[:routes][route].stations.include? global[:stations][station]
     raise "Route #{global[:routes][route].name} already contains "\
