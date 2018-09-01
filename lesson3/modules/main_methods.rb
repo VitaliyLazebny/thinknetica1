@@ -28,32 +28,10 @@ rescue StandardError => ex
   retry
 end
 
-def ask_route_data(global)
-  if global[:stations].size < 2
-    raise "Route can be created only if there's 2 or more stations."
-  end
-
-  display_stations(global)
-
-  first_station = ask_station(
-      'Please enter first station number:',
-      global)
-
-  last_station = ask_station(
-      'Please enter last station number:',
-      global)
-
-  if first_station == last_station
-    raise 'Route can\'t be started and ended with the same station.'
-  end
-
-  [first_station, last_station]
-end
-
 def create_route(global)
   stations = ask_route_data(global)
 
-  global[:routes].push(*Route.new(stations))
+  global[:routes].push(Route.new(*stations))
   puts "Route #{global[:routes].last.name} was created."
 rescue StandardError => ex
   puts "Error: #{ex.message}"
@@ -77,8 +55,8 @@ def add_station_to_route(global)
   display_stations(global)
 
   ask_station(
-      'Please enter station number:',
-      global
+    'Please enter station number:',
+    global
   )
 
   if global[:routes][route].stations.include? global[:stations][station]
@@ -107,8 +85,8 @@ def remove_station_from_route(global)
   display_stations(global)
 
   station = ask_station(
-      'Please enter station number:',
-      global
+    'Please enter station number:',
+    global
   )
 
   global[:routes][route].remove_station global[:routes][route].stations[station]
@@ -229,37 +207,14 @@ rescue StandardError => ex
 end
 
 def list_stations(global)
-  if !global[:stations].empty?
-    puts 'List of stations:'
-    global[:stations].each_with_index do |station, index|
-      puts "#{index}. #{station.name}"
-    end
-  else
-    puts "There's no Stations created."
-    return
-  end
+  display_stations(global)
 
-  puts 'Please enter station number:'
-  station = gets.chomp.to_i
-  if station.negative? ||
-     station > global[:stations].size - 1
+  ask_station(
+      'Please enter station number:',
+      global
+  )
 
-    raise "Station #{station} doesn't exist."
-  end
 
-  if !global[:stations][station].trains.empty?
-    puts 'List of trains on station:'
-    global[:stations][station].each_train_with_index do |index_t, train|
-      puts "#{index_t}. #{train.name}"
-      puts 'List of Coaches:'
-      train.each_coach_with_index do |index_c, coach|
-        puts "#{coach}. #{index_c}"
-      end
-    end
-    puts '...All trains from chosen station were displayed.'
-  else
-    puts "There's no trains on this station."
-  end
 rescue StandardError => ex
   puts "Error: #{ex.message}"
   retry
