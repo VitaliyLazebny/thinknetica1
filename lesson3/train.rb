@@ -98,6 +98,8 @@ class Train
 
     @current_station = next_station
     @current_station.accept_train self
+
+    puts "Train #{train.name} changed location to next station."
   end
 
   def go_to_previous_station
@@ -107,6 +109,8 @@ class Train
     @current_station = previous_station
 
     @current_station.accept_train self
+
+    puts "Train #{train.name} changed location to previous station."
   end
 
   def size

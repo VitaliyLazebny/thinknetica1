@@ -31,6 +31,10 @@ def display_trains_on_station(station)
     return
   end
 
+  list_trains(station)
+end
+
+def list_trains(station)
   puts 'List of trains on station:'
   global[:stations][station].each_train_with_index do |index_t, train|
     puts "#{index_t}. #{train.name}"
@@ -40,7 +44,24 @@ def display_trains_on_station(station)
   puts '...All trains from chosen station were displayed.'
 end
 
+def find_train_in_global(global)
+  raise "There's no trains created." if Train.all.size.zero?
+
+  display_trains(global)
+
+  train = ask_train_id(global)
+
+  train = global[:trains][train]
+
+  unless train.route && train.current_station
+    raise "Train #{train.name} doesn't have assigned route and station."
+  end
+
+  train
+end
+
 def ask_train_id(global)
+  display_trains(global)
   puts 'Please enter train number:'
   train = gets.chomp.to_i
 
@@ -66,6 +87,7 @@ def ask_train_data
 end
 
 def ask_station(question, global)
+  display_stations(global)
   puts question
   station = gets.chomp.to_i
   if station.negative? || station > global[:stations].size - 1
@@ -95,6 +117,7 @@ def display_routes(global)
 end
 
 def ask_route_id(global)
+  display_routes(global)
   puts 'Please enter route number:'
   route = gets.chomp.to_i
 
@@ -105,31 +128,22 @@ def ask_route_id(global)
   route
 end
 
-
 def ask_route_data(global)
   if global[:stations].size < 2
     raise "Route can be created only if there's 2 or more stations."
   end
 
   display_stations(global)
+  first_station = ask_station('Please enter first station number:', global)
 
-  first_station = ask_station(
-      'Please enter first station number:',
-      global
-  )
+  last_station = ask_station('Please enter last station number:', global)
 
-  last_station = ask_station(
-      'Please enter last station number:',
-      global
-  )
-
-  if first_station == last_station
+  if first_station.equal? last_station
     raise 'Route can\'t be started and ended with the same station.'
   end
 
   [first_station, last_station]
 end
-
 
 # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 # Create Coaches.
@@ -164,7 +178,6 @@ def display_coaches_at_train(train)
   end
 end
 
-
 def create_coach(train, global)
   coach = if train.type == 'cargo'
             create_coach_cargo
@@ -176,6 +189,16 @@ def create_coach(train, global)
   train.add_coach       coach
 
   coach
+end
+
+def find_coach_in_trains(global)
+  display_trains(global)
+
+  train = global[:trains][ask_train_id(global)]
+  raise 'Train has no coaches.' if train.size.zero?
+
+  display_coaches_at_train(train)
+  train.coaches[get_coach_id(train, global)]
 end
 
 def get_coach_id(train, _global)
