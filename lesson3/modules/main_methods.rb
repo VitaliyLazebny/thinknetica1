@@ -38,34 +38,14 @@ rescue StandardError => ex
   retry
 end
 
-def add_station_to_route(global)
-  raise 'No routes added to system' if global[:routes].empty?
-
-  puts 'Routes list:'
-  global[:routes].each_with_index do |route, index|
-    puts "#{index}. #{route.name}"
-  end
-
-  puts 'Please enter route number:'
-  route = gets.chomp.to_i
-  if route.negative? || route > global[:routes].size - 1
-    raise "Route #{route} doesn't exist."
-  end
-
+def add_station_to_route_dialog(global)
+  validate_route_present!(global)
+  display_routes(global)
+  route = ask_route_id(global)
   display_stations(global)
-
-  ask_station(
-    'Please enter station number:',
-    global
-  )
-
-  if global[:routes][route].stations.include? global[:stations][station]
-    raise "Route #{global[:routes][route].name} already contains "\
-          "Station #{global[:stations][station].name}"
-  end
-
-  global[:routes][route].add_stations [global[:stations][station]]
-  puts 'Station was successfully added to Route.'
+  ask_station('Please enter station number:', global)
+  validate_station_for_route(global[:routes][route], global[:stations][station])
+  add_station_to_route(global[:routes][route], global[:stations][station])
 rescue StandardError => ex
   puts "Error: #{ex.message}"
   retry
@@ -74,22 +54,15 @@ end
 def remove_station_from_route(global)
   raise 'No routes added to system' if global[:routes].empty?
   route = ask_route_id(global)
-
-  if global[:routes][route].stations.size < 3
-    raise "Station can't be removed since" \
-         ' route contains only 2 station (first and last).'
-  end
-
+  validate_stations_more_then_2!(global[:routes][route])
   station = ask_station('Please enter station number:', global)
   global[:routes][route].remove_station global[:routes][route].stations[station]
   puts "Station #{global[:stations][station].name} "\
        "from route #{global[:routes][route].name} "\
        'was successfully removed.'
-rescue StandardError => ex
-  puts "Error: #{ex.message}"
-  retry
 end
 
+# @param [Object] global
 def route_for_train(global)
   raise "There's no trains created."   if Train.all.size.zero?
   raise "There's no routes to assign." if global[:routes].empty?
