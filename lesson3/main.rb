@@ -28,7 +28,7 @@ loop do
     'create_station',
     'create_train',
     'create_route',
-    'add_station_to_route',
+    'add_station_to_route_dialog',
     'remove_station_from_route',
     'set_route_to_train',
     'add_coach_to_train',

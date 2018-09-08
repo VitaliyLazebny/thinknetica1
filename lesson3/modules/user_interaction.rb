@@ -222,3 +222,27 @@ def get_direction(_global)
 
   direction
 end
+
+def validate_station_for_route(route, station)
+  return unless route.stations.include? station
+
+  raise "Route #{global[:routes][route].name}"\
+        ' already contains '\
+        "Station #{global[:stations][station].name}"
+end
+
+def validate_route_present!(global)
+  raise 'No routes added to system' if global[:routes].empty?
+end
+
+def validate_stations_more_then_2!(route)
+  return if route.stations.size > 2
+
+  raise "Station can't be removed since" \
+        ' route contains only 2 station (first and last).'
+end
+
+def add_station_to_route(route, station)
+  route.add_stations [station]
+  puts 'Station was successfully added to Route.'
+end
