@@ -110,6 +110,11 @@ def display_stations(global)
 end
 
 def display_routes(global)
+  if global[:routes].empty?
+    puts "There's no Routes created."
+    return
+  end
+
   puts 'Routes list:'
   global[:routes].each_with_index do |route, index|
     puts "#{index}. #{route.name}"
