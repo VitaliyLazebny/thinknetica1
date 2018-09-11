@@ -40,12 +40,10 @@ end
 
 def add_station_to_route_dialog(global)
   validate_route_present!(global)
-  display_routes(global)
-  route = ask_route_id(global)
-  display_stations(global)
-  ask_station('Please enter station number:', global)
-  validate_station_for_route(global[:routes][route], global[:stations][station])
-  add_station_to_route(global[:routes][route], global[:stations][station])
+  route_id = ask_route_id(global)
+  station = ask_station('Please enter station number:', global)
+  validate_station_for_route(global[:routes][route_id], station)
+  add_station_to_route(global[:routes][route_id], station)
 rescue StandardError => ex
   puts "Error: #{ex.message}"
   retry
@@ -56,8 +54,8 @@ def remove_station_from_route(global)
   route = ask_route_id(global)
   validate_stations_more_then_2!(global[:routes][route])
   station = ask_station('Please enter station number:', global)
-  global[:routes][route].remove_station global[:routes][route].stations[station]
-  puts "Station #{global[:stations][station].name} "\
+  global[:routes][route].remove_station station
+  puts "Station #{station.name} "\
        "from route #{global[:routes][route].name} "\
        'was successfully removed.'
 end
