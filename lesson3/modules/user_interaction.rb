@@ -138,7 +138,7 @@ def ask_route_data(global)
     raise "Route can be created only if there's 2 or more stations."
   end
 
-  display_stations(global)
+  #display_stations(global)
   first_station = ask_station('Please enter first station number:', global)
 
   last_station = ask_station('Please enter last station number:', global)
