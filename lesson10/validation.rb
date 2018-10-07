@@ -12,9 +12,10 @@ module Validation
 
   # class method to add validation
   module ClassMethods
-    def validate(*args)
+    def validate(*args, &block)
       class_variable_set(:@@validations, []) unless class_variable_defined?(:@@validations)
 
+      args[3] = block
       class_variable_get(:@@validations).push args
     end
   end
@@ -27,6 +28,7 @@ module Validation
       field_name       = v[0]
       field_validation = v[1]
       field_extra_data = v[2]
+      field_custom     = v[3]
 
       instance_var = instance_variable_get("@#{field_name}")
 
@@ -37,6 +39,8 @@ module Validation
         fail "'#{field_name}' should correspond to RegExp #{field_extra_data}" unless field_extra_data.match?(instance_var)
       when :type
         fail "'#{field_name}' should be '#{field_extra_data}'" unless field_extra_data == instance_var.class
+      when :custom
+        instance_exec(instance_var, &field_custom)
       end
     end
 
