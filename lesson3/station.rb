@@ -2,15 +2,23 @@
 
 # class Station
 require_relative 'modules/instance_counter'
+require_relative '../lesson10/validation'
 
 # Station
 class Station
   include InstanceCounter
+  include Validation
 
   attr_reader :name
   attr_reader :trains
 
   alias id name
+
+  validate :name, :type,   String
+  validate :name, :format, /^[A-Za-z]{0,3}$/
+  validate :name, :custom do |n|
+    raise 'Station with given name already exist.' if self.class.find(n)
+  end
 
   def initialize(name)
     @name = name
@@ -22,25 +30,6 @@ class Station
   end
 
   # -   -   -   -   -   -   -   -   -   -
-  # Validation methods
-  def valid?
-    validate!
-  rescue StandardError
-    false
-  else
-    true
-  end
-
-  def validate!
-    # Name should be String longer then 3 symbols.
-    if !@name.is_a?(String) || @name.size < 3
-      raise 'Name should be String longer then 3 symbols.'
-    end
-
-    # Station with given name already exist
-    raise 'Station with given name already exist.' if self.class.find(@name)
-  end
-  # -   -   -   -   -   -   -   -   -
 
   def accept_train(train)
     @trains.push(train)

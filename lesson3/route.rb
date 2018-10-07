@@ -1,10 +1,29 @@
 # frozen_string_literal: true
 
+require_relative '../lesson10/validation'
+
 # Route
 class Route
+  include Validation
+
   ERROR_FEW_TIMES_USED = 'Some stations are added to route few times.'
 
   attr_reader :stations
+
+  validate :stations, :custom do |s|
+    # Stations in route should be uniq
+    raise ERROR_FEW_TIMES_USED unless s.size == s.uniq.size
+  end
+
+  validate :stations, :custom do |s|
+    # @stations was filled and all
+    # elements should be Stations
+    unless s.empty?
+      s.each do |is|
+        raise 'All stations should be Station class.' unless is.is_a?(Station)
+      end
+    end
+  end
 
   def initialize(first_station, last_station, other_stations = nil)
     @stations = [first_station, last_station]
@@ -14,29 +33,6 @@ class Route
     validate!
   end
 
-  #  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-  # Validation methods
-  def valid?
-    validate!
-  rescue StandardError
-    false
-  else
-    true
-  end
-
-  def validate!
-    # @stations was filled and all
-    # elements should be Stations
-    unless stations.empty?
-      stations.each do |is|
-        raise 'All stations should be Station class.' unless is.is_a?(Station)
-      end
-    end
-
-    # Stations in route should be uniq
-    raise ERROR_FEW_TIMES_USED unless stations.size == stations.uniq.size
-  end
-  #
   #  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
   def add_stations(stations_arg)

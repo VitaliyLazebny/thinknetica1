@@ -3,12 +3,14 @@
 require_relative 'modules/entity_type'
 require_relative 'modules/manufacturer'
 require_relative 'modules/instance_counter'
+require_relative '../lesson10/validation'
 
 # Train
 class Train
   include EntityType
   include Manufacturer
   include InstanceCounter
+  include Validation
 
   attr_reader :speed
   attr_reader :name
@@ -18,6 +20,14 @@ class Train
 
   alias id name
   alias number name
+
+  # Name should be:
+  # 3 word characters + optional bar + 2 word characters
+  validate :name, :format, /^[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}$/
+  validate :name, :type, String
+  validate :name, :custom do |n|
+    raise 'Train with given name already exist.' if self.class.find(n)
+  end
 
   def initialize(name)
     @name = name
@@ -30,33 +40,6 @@ class Train
 
     register_instance
   end
-
-  # -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
-  # Validation methods
-  def valid?
-    validate!
-  rescue StandardError
-    false
-  else
-    true
-  end
-
-  def validate!
-    # name should be String.
-    raise 'Name should be text string.' unless @name.is_a?(String)
-
-    # Name should be:
-    # 3 word characters +
-    # optional bar      +
-    # 2 word characters
-    unless @name[/^[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}$/]
-      raise 'Incorrect name format.'
-    end
-
-    # Train with given name already exist
-    raise 'Train with given name already exist.' if self.class.find(@name)
-  end
-  # -   -   -   -   -   -   -   -   -
 
   # -   -   -   -   -   -   -   -   -
   # Speed section
