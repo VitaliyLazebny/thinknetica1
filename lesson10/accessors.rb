@@ -2,21 +2,17 @@ module Accessors
   def attr_accessor_with_history(names)
     names.each do |name|
       name = name.to_sym
-
-      # create empty history for variable
-      instance_variable_set(name, [])
+      instance_var_name = "@#{name}".to_sym
 
       define_method("#{name}=") do |value|
-        instance_variable_get(name).push value
+        # create empty history for variable
+        instance_variable_set(instance_var_name, []) unless instance_variable_defined?(instance_var_name)
+
+        instance_variable_get(instance_var_name).push value
       end
 
-      define_method(name) do
-        instance_variable_get(name).last
-      end
-
-      define_method("#{name}_history") do
-        instance_variable_get(name)
-      end
+      define_method(name) { instance_variable_get(instance_var_name).last }
+      define_method("#{name}_history") { instance_variable_get(instance_var_name) }
     end
   end
 
