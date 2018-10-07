@@ -2,7 +2,7 @@ module Accessors
   def attr_accessor_with_history(names)
     names.each do |name|
       name = name.to_sym
-      instance_var_name = "@#{name}".to_sym
+      instance_var_name = "@#{name}"
 
       define_method("#{name}=") do |value|
         # create empty history for variable
