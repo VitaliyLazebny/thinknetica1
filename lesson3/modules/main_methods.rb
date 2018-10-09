@@ -10,6 +10,7 @@ def create_station(global)
   station = Station.new(station_name)
 rescue StandardError => ex
   puts "Error: #{ex.message}"
+  puts ex.backtrace
   retry
 else
   global[:stations].push station
